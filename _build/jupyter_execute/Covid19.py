@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# ## Covid19 data analysis
+# Using the data avaiable from Our World in Data, here we'll apply some of the data science concepts to analyze Covid19 data.
+
 # In[10]:
 
 
