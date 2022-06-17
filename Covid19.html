@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Exercise &#8212; Data Science</title>
+    <title>Covid19 data analysis &#8212; Data Science</title>
     
   <link href="_static/css/theme.css" rel="stylesheet" />
   <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
@@ -98,7 +98,7 @@
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Exercise
+   Covid19 data analysis
   </a>
  </li>
 </ul>
@@ -155,17 +155,17 @@
             </div>
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise">
    Exercise
   </a>
  </li>
- <li class="toc-h1 nav-item toc-entry">
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#changing-axis-scale">
    Changing axis scale
   </a>
  </li>
- <li class="toc-h1 nav-item toc-entry">
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#function-to-plot-total-cases">
    Function to plot total cases
   </a>
@@ -181,7 +181,10 @@
         
               <div>
                 
-  <div class="cell docutils container">
+  <div class="section" id="covid19-data-analysis">
+<h1>Covid19 data analysis<a class="headerlink" href="#covid19-data-analysis" title="Permalink to this headline">¶</a></h1>
+<p>Using the data avaiable from Our World in Data, here we’ll apply some of the data science concepts to analyze Covid19 data.</p>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -371,7 +374,7 @@
 </div></div></div>
 </div>
 <div class="section" id="exercise">
-<h1>Exercise<a class="headerlink" href="#exercise" title="Permalink to this headline">¶</a></h1>
+<h2>Exercise<a class="headerlink" href="#exercise" title="Permalink to this headline">¶</a></h2>
 <p>Find top 10 countries having highest number of total Covid cases till date.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -881,12 +884,12 @@ Name: new_cases, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Covid19_11_0.png" src="_images/Covid19_11_0.png" />
+<img alt="_images/Covid19_12_0.png" src="_images/Covid19_12_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="changing-axis-scale">
-<h1>Changing axis scale<a class="headerlink" href="#changing-axis-scale" title="Permalink to this headline">¶</a></h1>
+<h2>Changing axis scale<a class="headerlink" href="#changing-axis-scale" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -920,7 +923,7 @@ Name: new_cases, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Covid19_14_0.png" src="_images/Covid19_14_0.png" />
+<img alt="_images/Covid19_15_0.png" src="_images/Covid19_15_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -937,12 +940,12 @@ Name: new_cases, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Covid19_15_0.png" src="_images/Covid19_15_0.png" />
+<img alt="_images/Covid19_16_0.png" src="_images/Covid19_16_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="function-to-plot-total-cases">
-<h1>Function to plot total cases<a class="headerlink" href="#function-to-plot-total-cases" title="Permalink to this headline">¶</a></h1>
+<h2>Function to plot total cases<a class="headerlink" href="#function-to-plot-total-cases" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_country</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -957,7 +960,7 @@ Name: new_cases, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Covid19_17_0.png" src="_images/Covid19_17_0.png" />
+<img alt="_images/Covid19_18_0.png" src="_images/Covid19_18_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -970,7 +973,7 @@ Name: new_cases, dtype: float64
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Covid19_18_0.png" src="_images/Covid19_18_0.png" />
+<img alt="_images/Covid19_19_0.png" src="_images/Covid19_19_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1362,7 +1365,7 @@ dtype: object
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Covid19_27_0.png" src="_images/Covid19_27_0.png" />
+<img alt="_images/Covid19_28_0.png" src="_images/Covid19_28_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1425,7 +1428,8 @@ Length: 67, dtype: object
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/Covid19_30_0.png" src="_images/Covid19_30_0.png" />
+<img alt="_images/Covid19_31_0.png" src="_images/Covid19_31_0.png" />
+</div>
 </div>
 </div>
 </div>
