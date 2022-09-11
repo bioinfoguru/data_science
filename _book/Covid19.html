@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Science - 1&nbsp; Covid19 data analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<link href="./Interactive_visual.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="custom_css.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Covid19 data analysis</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./" class="sidebar-logo-link">
+      <img src="./logo_horizontal_transparent.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle sidebar-tool" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle sidebar-tool" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Covid19.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Covid19 data analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Interactive_visual.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Interactive data visualization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kmeans.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unsupervised learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ML_supervised.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PCA_tutorial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#changing-axis-scale" id="toc-changing-axis-scale" class="nav-link active" data-scroll-target="#changing-axis-scale"> <span class="header-section-number">1.1</span> Changing axis scale</a></li>
+  <li><a href="#function-to-plot-total-cases" id="toc-function-to-plot-total-cases" class="nav-link" data-scroll-target="#function-to-plot-total-cases"> <span class="header-section-number">1.2</span> Function to plot total cases</a></li>
+  <li><a href="#seaborn-library" id="toc-seaborn-library" class="nav-link" data-scroll-target="#seaborn-library"> <span class="header-section-number">1.3</span> Seaborn library</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Covid19 data analysis</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>Data analysis often requiring pre-processing of the data before the actual analysis. One must have a good understanding of not only the contents of the data but also must pay attention to the layout of the data. Many a times it is imperative to change the layout of the data to perform the analysis that we intend to do. We’ll now look at some of these concepts in action using the Covid19 data avaiable from Our World in Data. The csv file is available <a href="https://github.com/owid/covid-19-data/blob/master/public/data/owid-covid-data.csv">here</a>.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-scrolled="true" data-execution_count="230">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="op">=</span> pd.read_csv(<span class="st">"owid-covid-data.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df1.shape)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df1.tail()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(214477, 67)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="230">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>iso_code</th>
+      <th>continent</th>
+      <th>location</th>
+      <th>date</th>
+      <th>total_cases</th>
+      <th>new_cases</th>
+      <th>new_cases_smoothed</th>
+      <th>total_deaths</th>
+      <th>new_deaths</th>
+      <th>new_deaths_smoothed</th>
+      <th>...</th>
+      <th>female_smokers</th>
+      <th>male_smokers</th>
+      <th>handwashing_facilities</th>
+      <th>hospital_beds_per_thousand</th>
+      <th>life_expectancy</th>
+      <th>human_development_index</th>
+      <th>excess_mortality_cumulative_absolute</th>
+      <th>excess_mortality_cumulative</th>
+      <th>excess_mortality</th>
+      <th>excess_mortality_cumulative_per_million</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>214472</th>
+      <td>ZWE</td>
+      <td>Africa</td>
+      <td>Zimbabwe</td>
+      <td>2022-09-02</td>
+      <td>256744.0</td>
+      <td>6.0</td>
+      <td>8.857</td>
+      <td>5596.0</td>
+      <td>0.0</td>
+      <td>0.429</td>
+      <td>...</td>
+      <td>1.6</td>
+      <td>30.7</td>
+      <td>36.791</td>
+      <td>1.7</td>
+      <td>61.49</td>
+      <td>0.571</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>214473</th>
+      <td>ZWE</td>
+      <td>Africa</td>
+      <td>Zimbabwe</td>
+      <td>2022-09-03</td>
+      <td>256755.0</td>
+      <td>11.0</td>
+      <td>10.429</td>
+      <td>5596.0</td>
+      <td>0.0</td>
+      <td>0.429</td>
+      <td>...</td>
+      <td>1.6</td>
+      <td>30.7</td>
+      <td>36.791</td>
+      <td>1.7</td>
+      <td>61.49</td>
+      <td>0.571</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>214474</th>
+      <td>ZWE</td>
+      <td>Africa</td>
+      <td>Zimbabwe</td>
+      <td>2022-09-04</td>
+      <td>256763.0</td>
+      <td>8.0</td>
+      <td>9.143</td>
+      <td>5596.0</td>
+      <td>0.0</td>
+      <td>0.429</td>
+      <td>...</td>
+      <td>1.6</td>
+      <td>30.7</td>
+      <td>36.791</td>
+      <td>1.7</td>
+      <td>61.49</td>
+      <td>0.571</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>214475</th>
+      <td>ZWE</td>
+      <td>Africa</td>
+      <td>Zimbabwe</td>
+      <td>2022-09-05</td>
+      <td>256769.0</td>
+      <td>6.0</td>
+      <td>9.286</td>
+      <td>5596.0</td>
+      <td>0.0</td>
+      <td>0.429</td>
+      <td>...</td>
+      <td>1.6</td>
+      <td>30.7</td>
+      <td>36.791</td>
+      <td>1.7</td>
+      <td>61.49</td>
+      <td>0.571</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>214476</th>
+      <td>ZWE</td>
+      <td>Africa</td>
+      <td>Zimbabwe</td>
+      <td>2022-09-06</td>
+      <td>256782.0</td>
+      <td>13.0</td>
+      <td>10.571</td>
+      <td>5596.0</td>
+      <td>0.0</td>
+      <td>0.429</td>
+      <td>...</td>
+      <td>1.6</td>
+      <td>30.7</td>
+      <td>36.791</td>
+      <td>1.7</td>
+      <td>61.49</td>
+      <td>0.571</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 67 columns</p>
+</div>
+</div>
+</div>
+<p>This is a large dataset having thousands of rows and multiple columns. First, lets check what all information we have in this dataset i.e.&nbsp;what all columns are there. This can be achived by <code>columns</code> attribute of the dataframe. Please refer to the Our World in Data website for more information about the contents of this dataset.</p>
+<div class="cell" data-execution_count="219">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df_India.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="219">
+<pre><code>Index(['iso_code', 'continent', 'location', 'date', 'total_cases', 'new_cases',
+       'new_cases_smoothed', 'total_deaths', 'new_deaths',
+       'new_deaths_smoothed', 'total_cases_per_million',
+       'new_cases_per_million', 'new_cases_smoothed_per_million',
+       'total_deaths_per_million', 'new_deaths_per_million',
+       'new_deaths_smoothed_per_million', 'reproduction_rate', 'icu_patients',
+       'icu_patients_per_million', 'hosp_patients',
+       'hosp_patients_per_million', 'weekly_icu_admissions',
+       'weekly_icu_admissions_per_million', 'weekly_hosp_admissions',
+       'weekly_hosp_admissions_per_million', 'total_tests', 'new_tests',
+       'total_tests_per_thousand', 'new_tests_per_thousand',
+       'new_tests_smoothed', 'new_tests_smoothed_per_thousand',
+       'positive_rate', 'tests_per_case', 'tests_units', 'total_vaccinations',
+       'people_vaccinated', 'people_fully_vaccinated', 'total_boosters',
+       'new_vaccinations', 'new_vaccinations_smoothed',
+       'total_vaccinations_per_hundred', 'people_vaccinated_per_hundred',
+       'people_fully_vaccinated_per_hundred', 'total_boosters_per_hundred',
+       'new_vaccinations_smoothed_per_million',
+       'new_people_vaccinated_smoothed',
+       'new_people_vaccinated_smoothed_per_hundred', 'stringency_index',
+       'population', 'population_density', 'median_age', 'aged_65_older',
+       'aged_70_older', 'gdp_per_capita', 'extreme_poverty',
+       'cardiovasc_death_rate', 'diabetes_prevalence', 'female_smokers',
+       'male_smokers', 'handwashing_facilities', 'hospital_beds_per_thousand',
+       'life_expectancy', 'human_development_index',
+       'excess_mortality_cumulative_absolute', 'excess_mortality_cumulative',
+       'excess_mortality', 'excess_mortality_cumulative_per_million'],
+      dtype='object')</code></pre>
+</div>
+</div>
+<p>Next, we need to ask question(s) that we would like to be addressed through the analysis of this data. One such question could be – which are the top 10 countries with the highest number of total Covid19 cases? Given our dataset, we need to breakdown this problem into different steps. First get all the rows with the most current date in the date column. For this example we’ll retain only the location and total_cases columns although we can certain retain the entire dataset as well. An important point to note here is that that the location column need not have only the names of countries; there are certain groups name that are present as well, which we need to filter out. To filter these non-country location we need to prepare a list of all such group names (viz.&nbsp;World, Asia, etc). This list would then be passed to the <code>isin</code> function to make the required selection from the original dataframe. Next, using the <code>nlargest</code> function we can get the top <em>n</em> values for the total_cases column. The total_cases are formated to show the values with commas.</p>
+<div class="cell" data-execution_count="231">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>top_10 <span class="op">=</span> df1[df1[<span class="st">"date"</span>]<span class="op">==</span><span class="st">"2022-09-06"</span>][[<span class="st">"location"</span>,<span class="st">"total_cases"</span>]]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>groups_list <span class="op">=</span> [<span class="st">"World"</span>,<span class="st">"High income"</span>,<span class="st">"Upper middle income"</span>, <span class="st">"Europe"</span>, <span class="st">"Asia"</span>, <span class="st">"European Union"</span>, <span class="op">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">"Africa"</span>, <span class="st">"Lower middle income"</span>, <span class="st">"North America"</span>, <span class="st">"South America"</span>]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>top_10 <span class="op">=</span> top_10.loc[<span class="op">~</span>top_10[<span class="st">"location"</span>].isin(groups_list)] <span class="co"># note the ~ operator</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>top_10 <span class="op">=</span> top_10.nlargest(<span class="dv">10</span>,<span class="st">"total_cases"</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>top_10.style.<span class="bu">format</span>({<span class="st">"total_cases"</span>: <span class="st">"{:,.0f}"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="231">
+
+<style type="text/css">
+</style>
+<table id="T_f57b6">
+  <thead>
+    <tr>
+      <th class="blank level0">&nbsp;</th>
+      <th id="T_f57b6_level0_col0" class="col_heading level0 col0">location</th>
+      <th id="T_f57b6_level0_col1" class="col_heading level0 col1">total_cases</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_f57b6_level0_row0" class="row_heading level0 row0">0</th>
+      <td id="T_f57b6_row0_col0" class="data row0 col0">United States</td>
+      <td id="T_f57b6_row0_col1" class="data row0 col1">94,898,863</td>
+    </tr>
+    <tr>
+      <th id="T_f57b6_level0_row1" class="row_heading level0 row1">1</th>
+      <td id="T_f57b6_row1_col0" class="data row1 col0">India</td>
+      <td id="T_f57b6_row1_col1" class="data row1 col1">44,469,661</td>
+    </tr>
+    <tr>
+      <th id="T_f57b6_level0_row2" class="row_heading level0 row2">2</th>
+      <td id="T_f57b6_row2_col0" class="data row2 col0">France</td>
+      <td id="T_f57b6_row2_col1" class="data row2 col1">34,685,277</td>
+    </tr>
+    <tr>
+      <th id="T_f57b6_level0_row3" class="row_heading level0 row3">3</th>
+      <td id="T_f57b6_row3_col0" class="data row3 col0">Brazil</td>
+      <td id="T_f57b6_row3_col1" class="data row3 col1">34,477,539</td>
+    </tr>
+    <tr>
+      <th id="T_f57b6_level0_row4" class="row_heading level0 row4">4</th>
+      <td id="T_f57b6_row4_col0" class="data row4 col0">Germany</td>
+      <td id="T_f57b6_row4_col1" class="data row4 col1">32,344,032</td>
+    </tr>
+    <tr>
+      <th id="T_f57b6_level0_row5" class="row_heading level0 row5">5</th>
+      <td id="T_f57b6_row5_col0" class="data row5 col0">South Korea</td>
+      <td id="T_f57b6_row5_col1" class="data row5 col1">23,791,961</td>
+    </tr>
+    <tr>
+      <th id="T_f57b6_level0_row6" class="row_heading level0 row6">6</th>
+      <td id="T_f57b6_row6_col0" class="data row6 col0">United Kingdom</td>
+      <td id="T_f57b6_row6_col1" class="data row6 col1">23,521,792</td>
+    </tr>
+    <tr>
+      <th id="T_f57b6_level0_row7" class="row_heading level0 row7">7</th>
+      <td id="T_f57b6_row7_col0" class="data row7 col0">Italy</td>
+      <td id="T_f57b6_row7_col1" class="data row7 col1">21,969,725</td>
+    </tr>
+    <tr>
+      <th id="T_f57b6_level0_row8" class="row_heading level0 row8">8</th>
+      <td id="T_f57b6_row8_col0" class="data row8 col0">Japan</td>
+      <td id="T_f57b6_row8_col1" class="data row8 col1">19,640,667</td>
+    </tr>
+    <tr>
+      <th id="T_f57b6_level0_row9" class="row_heading level0 row9">9</th>
+      <td id="T_f57b6_row9_col0" class="data row9 col0">Russia</td>
+      <td id="T_f57b6_row9_col1" class="data row9 col1">19,521,190</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+<p>To get countries with the maximum number of cases per continent, we can use the <code>groupby</code> function to group the dataframe by continent column. Then using the <code>idmax</code> function the indices of the highest value for the total_cases column is retrieved. To get the final list, use these indices to get rows by location i.e.&nbsp;with the <code>loc</code> attribute of the dataframe.</p>
+<div class="cell" data-execution_count="95">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>top_10_cont <span class="op">=</span> df1[[<span class="st">"continent"</span>,<span class="st">"location"</span>,<span class="st">"total_cases"</span>]]</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>top_10_cont.loc[top_10_cont.groupby(<span class="st">"continent"</span>)[<span class="st">"total_cases"</span>].idxmax()].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="95">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>continent</th>
+      <th>location</th>
+      <th>total_cases</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Africa</td>
+      <td>South Africa</td>
+      <td>4012920.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Asia</td>
+      <td>India</td>
+      <td>44469661.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Europe</td>
+      <td>France</td>
+      <td>34685277.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>North America</td>
+      <td>United States</td>
+      <td>94898863.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Oceania</td>
+      <td>Australia</td>
+      <td>10095000.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>South America</td>
+      <td>Brazil</td>
+      <td>34477539.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Bar plot of top 10 countries.</p>
+<div class="cell" data-execution_count="98">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ax.barh(top_10[<span class="st">"location"</span>],top_10[<span class="st">"total_cases"</span>], color<span class="op">=</span><span class="st">"lightblue"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>ax.spines[[<span class="st">"top"</span>,<span class="st">"right"</span>,<span class="st">"left"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ax.yaxis.set_ticks_position(<span class="st">'none'</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>a<span class="op">=</span>ax.get_yticklabels()</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="st">'on'</span>,which<span class="op">=</span><span class="st">'major'</span>,axis<span class="op">=</span><span class="st">'x'</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>ax.invert_yaxis()</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Covid19_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<section id="changing-axis-scale" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="changing-axis-scale"><span class="header-section-number">1.1</span> Changing axis scale</h2>
+<p>On a linear scale there is a fixed increment at regular intervals. The positioning of the tick marks on the axis for a graph with linear scale is calculated by addition. Whereas, on a log scale the ticks on the axis are marked using multiplication factor. This makes log scale graphs less intuitive to understand the underlying information and therefore it requires some training to parse graphs with log scale. Let’s plot some data to get a clarity on this distinction between these scales. For this example, we’ll plot exponential curve i.e.&nbsp;the values would be like 1,2,4,8,16,32…etc. The graphs below shows this trend plotted with y-axis having a linear (left) and a log (right) scale. Notice how different the two curves look! The log scale graph is useful in interpreting the pattern of the growth such that an exponential growth on a log scale would result in a straight line.</p>
+<div class="cell" data-execution_count="99">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>N<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">11</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> []</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> a <span class="kw">in</span> x:</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> N<span class="op">*</span><span class="dv">2</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    y.append(N)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>fig, (ax1,ax2) <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">1</span>, ncols<span class="op">=</span><span class="dv">2</span>,figsize<span class="op">=</span>(<span class="dv">9</span>,<span class="dv">3</span>))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>ax1.plot(x,y)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>ax2.plot(x,y)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>ax2.set_yscale(<span class="st">'log'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>ax1.set_title(<span class="st">"Linear Scale"</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>ax2.set_title(<span class="st">"Log Scale"</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Covid19_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Let’s plot the emergence of new cases on linear and log scales.</p>
+<div class="cell" data-execution_count="118">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fig,ax<span class="op">=</span>plt.subplots(<span class="dv">1</span>,<span class="dv">2</span>,figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">3</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"India"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"United States"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"France"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].legend([<span class="st">"India"</span>,<span class="st">"United States"</span>, <span class="st">"France"</span>])</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_ylabel(<span class="st">"Total Cases"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_title(<span class="st">"Linear"</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"India"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">1</span>])</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"United States"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">1</span>])</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"France"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">1</span>])</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">"India"</span>,<span class="st">"United States"</span>, <span class="st">"France"</span>])</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].legend([<span class="st">"India"</span>,<span class="st">"United States"</span>, <span class="st">"France"</span>])</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_ylabel(<span class="st">"Total Cases"</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_yscale(<span class="st">"log"</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_title(<span class="st">"Log"</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Covid19_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="function-to-plot-total-cases" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="function-to-plot-total-cases"><span class="header-section-number">1.2</span> Function to plot total cases</h2>
+<p>We can write a function to plot the time series of total cases for any location(s). This function would be define with <code>*args</code> to hold a list of locations that need to be plotted.</p>
+<div class="cell" data-execution_count="120">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_country(<span class="op">*</span>args):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    fig,ax<span class="op">=</span>plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">3</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> c <span class="kw">in</span> args:</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        df1[df1[<span class="st">"location"</span>]<span class="op">==</span>c].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    plt.legend(args)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>plot_country(<span class="st">"India"</span>,<span class="st">"United States"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Covid19_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The visualize emergence of new cases over time, we need to plot the new_cases for a given location. This kind of plot would give us an idea about the “waves” of the pandemic.</p>
+<div class="cell" data-execution_count="126">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fig,ax<span class="op">=</span>plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">3</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"India"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"new_cases"</span>,ax<span class="op">=</span>ax)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Number of cases"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">"India"</span>])</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Covid19_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>The analyze a particular country in detail, a subset of the dataframe can be created having data for only that country. In the example below we’ll make a dataframe for location “India” and then we’ll find out number of monthly cases in a specific year. For this we’ll first need to change the datatype of the “date” column to pandas datatime datatype. The datatypes for all the columns can be checked by used the <code>dtypes</code> attribute for the dataframe.</p>
+<div class="cell" data-execution_count="234">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df_India <span class="op">=</span> df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"India"</span>]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df_India.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="234">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>iso_code</th>
+      <th>continent</th>
+      <th>location</th>
+      <th>date</th>
+      <th>total_cases</th>
+      <th>new_cases</th>
+      <th>new_cases_smoothed</th>
+      <th>total_deaths</th>
+      <th>new_deaths</th>
+      <th>new_deaths_smoothed</th>
+      <th>...</th>
+      <th>female_smokers</th>
+      <th>male_smokers</th>
+      <th>handwashing_facilities</th>
+      <th>hospital_beds_per_thousand</th>
+      <th>life_expectancy</th>
+      <th>human_development_index</th>
+      <th>excess_mortality_cumulative_absolute</th>
+      <th>excess_mortality_cumulative</th>
+      <th>excess_mortality</th>
+      <th>excess_mortality_cumulative_per_million</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>88211</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>2020-01-30</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>88212</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>2020-01-31</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>88213</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>2020-02-01</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>88214</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>2020-02-02</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>88215</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>2020-02-03</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 67 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-scrolled="true" data-execution_count="235">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The data type for the date column is"</span>, df_India[<span class="st">'date'</span>].dtype)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df_India[<span class="st">'date'</span>] <span class="op">=</span> pd.to_datetime(df_India[<span class="st">'date'</span>])</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The data type for the date column is"</span>, df_India[<span class="st">'date'</span>].dtype)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The data type for the date column is object
+The data type for the date column is datetime64[ns]</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="236">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df_India_2022 <span class="op">=</span> df_India[(df_India[<span class="st">"date"</span>] <span class="op">&gt;=</span> <span class="st">'2022-01-01'</span>)]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df_India_2022.dtypes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="236">
+<pre><code>iso_code                                           object
+continent                                          object
+location                                           object
+date                                       datetime64[ns]
+total_cases                                       float64
+                                                ...      
+human_development_index                           float64
+excess_mortality_cumulative_absolute              float64
+excess_mortality_cumulative                       float64
+excess_mortality                                  float64
+excess_mortality_cumulative_per_million           float64
+Length: 67, dtype: object</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="237">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df_months <span class="op">=</span> df_India_2022.groupby(df_India_2022[<span class="st">'date'</span>].dt.strftime(<span class="st">'%B'</span>))[<span class="st">"new_cases"</span>].<span class="bu">sum</span>().to_frame().reset_index()</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>df_months</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="237">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>date</th>
+      <th>new_cases</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>April</td>
+      <td>53413.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>August</td>
+      <td>400064.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>February</td>
+      <td>1461546.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>January</td>
+      <td>6607920.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>July</td>
+      <td>567041.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>June</td>
+      <td>308402.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>March</td>
+      <td>94730.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>May</td>
+      <td>81644.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>September</td>
+      <td>33322.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>To sort the dataframe by month, we need to first change the data type of the months column to catagorical since the default data type of this column (object) would lead to sorting by alphabetical order. We would like to sort this column by the order that we see in a calender (which, of course, is not alphabetical).</p>
+<div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df_months.sort_values(by<span class="op">=</span><span class="st">"date"</span>,inplace<span class="op">=</span><span class="va">True</span>, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>df_months_1 <span class="op">=</span> df_months.style.set_caption(<span class="st">"Date as object data type"</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>display(df_months_1)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>months <span class="op">=</span> [<span class="st">"January"</span>, <span class="st">"February"</span>, <span class="st">"March"</span>, <span class="st">"April"</span>, <span class="st">"May"</span>, <span class="st">"June"</span>, </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>          <span class="st">"July"</span>, <span class="st">"August"</span>, <span class="st">"September"</span>, <span class="st">"October"</span>, <span class="st">"November"</span>, <span class="st">"December"</span>]</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>df_months[<span class="st">'date'</span>] <span class="op">=</span> pd.Categorical(df_months[<span class="st">'date'</span>], categories<span class="op">=</span>months, ordered<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>df_months.sort_values(by<span class="op">=</span><span class="st">"date"</span>,inplace<span class="op">=</span><span class="va">True</span>, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>df_months_2 <span class="op">=</span> df_months.style.set_caption(<span class="st">"Date as catagorical data type"</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>display(df_months_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel" data-execution_count="238">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+
+<style type="text/css">
+</style>
+<table id="T_90f3e">
+  <caption>Date as object data type</caption>
+  <thead>
+    <tr>
+      <th class="blank level0">&nbsp;</th>
+      <th id="T_90f3e_level0_col0" class="col_heading level0 col0">date</th>
+      <th id="T_90f3e_level0_col1" class="col_heading level0 col1">new_cases</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_90f3e_level0_row0" class="row_heading level0 row0">0</th>
+      <td id="T_90f3e_row0_col0" class="data row0 col0">April</td>
+      <td id="T_90f3e_row0_col1" class="data row0 col1">53413.000000</td>
+    </tr>
+    <tr>
+      <th id="T_90f3e_level0_row1" class="row_heading level0 row1">1</th>
+      <td id="T_90f3e_row1_col0" class="data row1 col0">August</td>
+      <td id="T_90f3e_row1_col1" class="data row1 col1">400064.000000</td>
+    </tr>
+    <tr>
+      <th id="T_90f3e_level0_row2" class="row_heading level0 row2">2</th>
+      <td id="T_90f3e_row2_col0" class="data row2 col0">February</td>
+      <td id="T_90f3e_row2_col1" class="data row2 col1">1461546.000000</td>
+    </tr>
+    <tr>
+      <th id="T_90f3e_level0_row3" class="row_heading level0 row3">3</th>
+      <td id="T_90f3e_row3_col0" class="data row3 col0">January</td>
+      <td id="T_90f3e_row3_col1" class="data row3 col1">6607920.000000</td>
+    </tr>
+    <tr>
+      <th id="T_90f3e_level0_row4" class="row_heading level0 row4">4</th>
+      <td id="T_90f3e_row4_col0" class="data row4 col0">July</td>
+      <td id="T_90f3e_row4_col1" class="data row4 col1">567041.000000</td>
+    </tr>
+    <tr>
+      <th id="T_90f3e_level0_row5" class="row_heading level0 row5">5</th>
+      <td id="T_90f3e_row5_col0" class="data row5 col0">June</td>
+      <td id="T_90f3e_row5_col1" class="data row5 col1">308402.000000</td>
+    </tr>
+    <tr>
+      <th id="T_90f3e_level0_row6" class="row_heading level0 row6">6</th>
+      <td id="T_90f3e_row6_col0" class="data row6 col0">March</td>
+      <td id="T_90f3e_row6_col1" class="data row6 col1">94730.000000</td>
+    </tr>
+    <tr>
+      <th id="T_90f3e_level0_row7" class="row_heading level0 row7">7</th>
+      <td id="T_90f3e_row7_col0" class="data row7 col0">May</td>
+      <td id="T_90f3e_row7_col1" class="data row7 col1">81644.000000</td>
+    </tr>
+    <tr>
+      <th id="T_90f3e_level0_row8" class="row_heading level0 row8">8</th>
+      <td id="T_90f3e_row8_col0" class="data row8 col0">September</td>
+      <td id="T_90f3e_row8_col1" class="data row8 col1">33322.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div class="cell-output cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+
+<style type="text/css">
+</style>
+<table id="T_8e932">
+  <caption>Date as catagorical data type</caption>
+  <thead>
+    <tr>
+      <th class="blank level0">&nbsp;</th>
+      <th id="T_8e932_level0_col0" class="col_heading level0 col0">date</th>
+      <th id="T_8e932_level0_col1" class="col_heading level0 col1">new_cases</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_8e932_level0_row0" class="row_heading level0 row0">0</th>
+      <td id="T_8e932_row0_col0" class="data row0 col0">January</td>
+      <td id="T_8e932_row0_col1" class="data row0 col1">6607920.000000</td>
+    </tr>
+    <tr>
+      <th id="T_8e932_level0_row1" class="row_heading level0 row1">1</th>
+      <td id="T_8e932_row1_col0" class="data row1 col0">February</td>
+      <td id="T_8e932_row1_col1" class="data row1 col1">1461546.000000</td>
+    </tr>
+    <tr>
+      <th id="T_8e932_level0_row2" class="row_heading level0 row2">2</th>
+      <td id="T_8e932_row2_col0" class="data row2 col0">March</td>
+      <td id="T_8e932_row2_col1" class="data row2 col1">94730.000000</td>
+    </tr>
+    <tr>
+      <th id="T_8e932_level0_row3" class="row_heading level0 row3">3</th>
+      <td id="T_8e932_row3_col0" class="data row3 col0">April</td>
+      <td id="T_8e932_row3_col1" class="data row3 col1">53413.000000</td>
+    </tr>
+    <tr>
+      <th id="T_8e932_level0_row4" class="row_heading level0 row4">4</th>
+      <td id="T_8e932_row4_col0" class="data row4 col0">May</td>
+      <td id="T_8e932_row4_col1" class="data row4 col1">81644.000000</td>
+    </tr>
+    <tr>
+      <th id="T_8e932_level0_row5" class="row_heading level0 row5">5</th>
+      <td id="T_8e932_row5_col0" class="data row5 col0">June</td>
+      <td id="T_8e932_row5_col1" class="data row5 col1">308402.000000</td>
+    </tr>
+    <tr>
+      <th id="T_8e932_level0_row6" class="row_heading level0 row6">6</th>
+      <td id="T_8e932_row6_col0" class="data row6 col0">July</td>
+      <td id="T_8e932_row6_col1" class="data row6 col1">567041.000000</td>
+    </tr>
+    <tr>
+      <th id="T_8e932_level0_row7" class="row_heading level0 row7">7</th>
+      <td id="T_8e932_row7_col0" class="data row7 col0">August</td>
+      <td id="T_8e932_row7_col1" class="data row7 col1">400064.000000</td>
+    </tr>
+    <tr>
+      <th id="T_8e932_level0_row8" class="row_heading level0 row8">8</th>
+      <td id="T_8e932_row8_col0" class="data row8 col0">September</td>
+      <td id="T_8e932_row8_col1" class="data row8 col1">33322.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="239">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fig,ax<span class="op">=</span>plt.subplots()</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>df_months.plot(kind<span class="op">=</span><span class="st">"bar"</span>,xlabel<span class="op">=</span><span class="st">"date"</span>, ax<span class="op">=</span>ax)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels([<span class="st">"January"</span>, <span class="st">"February"</span>, <span class="st">"March"</span>, <span class="st">"April"</span>, <span class="st">"May"</span>, <span class="st">"June"</span>, <span class="op">\</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>          <span class="st">"July"</span>, <span class="st">"August"</span>, <span class="st">"September"</span>])</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Number of cases"</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Covid19_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-scrolled="true" data-execution_count="241">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df_India_2022[<span class="st">"date"</span>] <span class="op">=</span> df_India_2022[<span class="st">"date"</span>].dt.strftime(<span class="st">'%B'</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>months <span class="op">=</span> [<span class="st">"January"</span>, <span class="st">"February"</span>, <span class="st">"March"</span>, <span class="st">"April"</span>, <span class="st">"May"</span>, <span class="st">"June"</span>,<span class="st">"July"</span>, <span class="st">"August"</span>, <span class="st">"September"</span>]</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>df_India_2022[<span class="st">'date'</span>] <span class="op">=</span> pd.Categorical(df_India_2022[<span class="st">'date'</span>], categories<span class="op">=</span>months, ordered<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>df_India_2022.sort_values(by<span class="op">=</span><span class="st">"date"</span>,inplace<span class="op">=</span><span class="va">True</span>, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>df_India_2022.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="241">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>iso_code</th>
+      <th>continent</th>
+      <th>location</th>
+      <th>date</th>
+      <th>total_cases</th>
+      <th>new_cases</th>
+      <th>new_cases_smoothed</th>
+      <th>total_deaths</th>
+      <th>new_deaths</th>
+      <th>new_deaths_smoothed</th>
+      <th>...</th>
+      <th>female_smokers</th>
+      <th>male_smokers</th>
+      <th>handwashing_facilities</th>
+      <th>hospital_beds_per_thousand</th>
+      <th>life_expectancy</th>
+      <th>human_development_index</th>
+      <th>excess_mortality_cumulative_absolute</th>
+      <th>excess_mortality_cumulative</th>
+      <th>excess_mortality</th>
+      <th>excess_mortality_cumulative_per_million</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>January</td>
+      <td>34889132.0</td>
+      <td>27553.0</td>
+      <td>14618.571</td>
+      <td>481770.0</td>
+      <td>284.0</td>
+      <td>298.286</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>January</td>
+      <td>41469499.0</td>
+      <td>167059.0</td>
+      <td>238613.857</td>
+      <td>496242.0</td>
+      <td>1192.0</td>
+      <td>825.714</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>January</td>
+      <td>41302440.0</td>
+      <td>209918.0</td>
+      <td>251301.714</td>
+      <td>495050.0</td>
+      <td>959.0</td>
+      <td>743.143</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>January</td>
+      <td>41092522.0</td>
+      <td>234281.0</td>
+      <td>265036.857</td>
+      <td>494091.0</td>
+      <td>893.0</td>
+      <td>668.857</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>January</td>
+      <td>40858241.0</td>
+      <td>235532.0</td>
+      <td>279215.714</td>
+      <td>493198.0</td>
+      <td>871.0</td>
+      <td>616.286</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 67 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="218">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> df_India_2022.boxplot(column<span class="op">=</span><span class="st">"new_cases"</span>,by<span class="op">=</span><span class="st">"date"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">""</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Covid19_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="seaborn-library" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="seaborn-library"><span class="header-section-number">1.3</span> Seaborn library</h2>
+<div class="cell" data-execution_count="223">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="224">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>new_df <span class="op">=</span> df1.loc[df1[<span class="st">'location'</span>].isin([<span class="st">"India"</span>,<span class="st">"United States"</span>])]</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>new_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="224">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>iso_code</th>
+      <th>continent</th>
+      <th>location</th>
+      <th>date</th>
+      <th>total_cases</th>
+      <th>new_cases</th>
+      <th>new_cases_smoothed</th>
+      <th>total_deaths</th>
+      <th>new_deaths</th>
+      <th>new_deaths_smoothed</th>
+      <th>...</th>
+      <th>female_smokers</th>
+      <th>male_smokers</th>
+      <th>handwashing_facilities</th>
+      <th>hospital_beds_per_thousand</th>
+      <th>life_expectancy</th>
+      <th>human_development_index</th>
+      <th>excess_mortality_cumulative_absolute</th>
+      <th>excess_mortality_cumulative</th>
+      <th>excess_mortality</th>
+      <th>excess_mortality_cumulative_per_million</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>88211</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>2020-01-30</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>88212</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>2020-01-31</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>88213</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>2020-02-01</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>88214</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>2020-02-02</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>88215</th>
+      <td>IND</td>
+      <td>Asia</td>
+      <td>India</td>
+      <td>2020-02-03</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>20.6</td>
+      <td>59.55</td>
+      <td>0.53</td>
+      <td>69.66</td>
+      <td>0.645</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>203103</th>
+      <td>USA</td>
+      <td>North America</td>
+      <td>United States</td>
+      <td>2022-09-02</td>
+      <td>94733881.0</td>
+      <td>82785.0</td>
+      <td>78205.571</td>
+      <td>1047482.0</td>
+      <td>472.0</td>
+      <td>501.571</td>
+      <td>...</td>
+      <td>19.1</td>
+      <td>24.6</td>
+      <td>NaN</td>
+      <td>2.77</td>
+      <td>78.86</td>
+      <td>0.926</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>203104</th>
+      <td>USA</td>
+      <td>North America</td>
+      <td>United States</td>
+      <td>2022-09-03</td>
+      <td>94743672.0</td>
+      <td>9791.0</td>
+      <td>77982.714</td>
+      <td>1047504.0</td>
+      <td>22.0</td>
+      <td>500.429</td>
+      <td>...</td>
+      <td>19.1</td>
+      <td>24.6</td>
+      <td>NaN</td>
+      <td>2.77</td>
+      <td>78.86</td>
+      <td>0.926</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>203105</th>
+      <td>USA</td>
+      <td>North America</td>
+      <td>United States</td>
+      <td>2022-09-04</td>
+      <td>94749783.0</td>
+      <td>6111.0</td>
+      <td>77879.571</td>
+      <td>1047505.0</td>
+      <td>1.0</td>
+      <td>500.286</td>
+      <td>...</td>
+      <td>19.1</td>
+      <td>24.6</td>
+      <td>NaN</td>
+      <td>2.77</td>
+      <td>78.86</td>
+      <td>0.926</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>203106</th>
+      <td>USA</td>
+      <td>North America</td>
+      <td>United States</td>
+      <td>2022-09-05</td>
+      <td>94769820.0</td>
+      <td>20037.0</td>
+      <td>66083.857</td>
+      <td>1047576.0</td>
+      <td>71.0</td>
+      <td>444.714</td>
+      <td>...</td>
+      <td>19.1</td>
+      <td>24.6</td>
+      <td>NaN</td>
+      <td>2.77</td>
+      <td>78.86</td>
+      <td>0.926</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>203107</th>
+      <td>USA</td>
+      <td>North America</td>
+      <td>United States</td>
+      <td>2022-09-06</td>
+      <td>94898863.0</td>
+      <td>129043.0</td>
+      <td>74251.286</td>
+      <td>1048201.0</td>
+      <td>625.0</td>
+      <td>484.571</td>
+      <td>...</td>
+      <td>19.1</td>
+      <td>24.6</td>
+      <td>NaN</td>
+      <td>2.77</td>
+      <td>78.86</td>
+      <td>0.926</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>1910 rows × 67 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="225">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>sns.jointplot(data<span class="op">=</span>new_df,<span class="op">\</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>              x<span class="op">=</span><span class="st">"new_cases"</span>,y<span class="op">=</span><span class="st">"new_deaths"</span>, hue<span class="op">=</span><span class="st">"location"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="225">
+<pre><code>&lt;seaborn.axisgrid.JointGrid at 0x23a3cb50d00&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="Covid19_files/figure-html/cell-22-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="226">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sns.jointplot(data<span class="op">=</span>new_df, x<span class="op">=</span><span class="st">"total_cases"</span>,y<span class="op">=</span><span class="st">"total_vaccinations"</span>, hue<span class="op">=</span><span class="st">"location"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="226">
+<pre><code>&lt;seaborn.axisgrid.JointGrid at 0x23a3cc41430&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="Covid19_files/figure-html/cell-23-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="227">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>sns.pairplot(new_df[[<span class="st">"location"</span>,<span class="st">"total_cases"</span>,<span class="st">"total_deaths"</span>,<span class="st">"total_vaccinations"</span>]],hue<span class="op">=</span><span class="st">"location"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="227">
+<pre><code>&lt;seaborn.axisgrid.PairGrid at 0x23a3cdc6d00&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="Covid19_files/figure-html/cell-24-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./Interactive_visual.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Interactive data visualization</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Copyright 2022, bioinfo.guru</div>   
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.facebook.com/profile.php?id=100078250833738">
+      <i class="bi bi-facebook" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.instagram.com/bioinfo.guru/">
+      <i class="bi bi-instagram" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/bioinfo-guru-68a8b7231/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/bioinfo_guru">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>

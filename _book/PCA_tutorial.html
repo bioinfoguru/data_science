@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Science - 5&nbsp; Principal Component Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<link href="./ML_supervised.html" rel="prev">
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="custom_css.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./" class="sidebar-logo-link">
+      <img src="./logo_horizontal_transparent.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle sidebar-tool" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle sidebar-tool" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Covid19.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Covid19 data analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Interactive_visual.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Interactive data visualization</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kmeans.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unsupervised learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ML_supervised.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PCA_tutorial.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#data-pre-processing" id="toc-data-pre-processing" class="nav-link active" data-scroll-target="#data-pre-processing"> <span class="header-section-number">5.1</span> Data pre-processing</a></li>
+  <li><a href="#model-building" id="toc-model-building" class="nav-link" data-scroll-target="#model-building"> <span class="header-section-number">5.2</span> Model building</a></li>
+  <li><a href="#pca-loadings" id="toc-pca-loadings" class="nav-link" data-scroll-target="#pca-loadings"> <span class="header-section-number">5.3</span> PCA Loadings</a></li>
+  <li><a href="#biplot" id="toc-biplot" class="nav-link" data-scroll-target="#biplot"> <span class="header-section-number">5.4</span> Biplot</a>
+  <ul class="collapse">
+  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>PCA is an unsupervised learning algorithm which is widely used to reduce the dimensions of large datasets. It can also be used for feature extraction such that we can use a limited number of features. PCA helps to identify feature(s) that contributes maximally to the variance in the data.</p>
+<p>PCA transforms the original data to a lower dimensional space while minimizing the information loss.</p>
+<p>Here we’ll use a dataset from <a href="https://www.pnas.org/doi/pdf/10.1073/pnas.1904964116">this manuscript</a> to receate some of the analysis presented in the manuscript. This manuscript presents analysis of 8 phenotypic traits in 169 <em>japonica</em> rice varieties. The data used here is available in the supplementary material of the manuscript <a href="https://www.pnas.org/doi/suppl/10.1073/pnas.1904964116/suppl_file/pnas.1904964116.sd01.xlsx">download</a>. Save this excel file in csv format.</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Read data in csv format having parameters for different aspect of the plant over two years. Columns 3 to 10 and 11 to 18 for 2014 and 2015, respectively. The first column is “Line number” so we’ll use that as index for our dataframe and second column is plant variety. There is no header row in the csv file. Let’s read the data and preprocess it.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="op">=</span> pd.read_csv(<span class="st">"pnas_suppl.csv"</span>, index_col<span class="op">=</span><span class="dv">0</span>,header<span class="op">=</span><span class="va">None</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-scrolled="true" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+      <th>13</th>
+      <th>14</th>
+      <th>15</th>
+      <th>16</th>
+      <th>17</th>
+    </tr>
+    <tr>
+      <th>0</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Line 1</th>
+      <td>GORIKI</td>
+      <td>98</td>
+      <td>112.0</td>
+      <td>7.0</td>
+      <td>26.7</td>
+      <td>19.6</td>
+      <td>12.7</td>
+      <td>41.3</td>
+      <td>206.3</td>
+      <td>101</td>
+      <td>117.1</td>
+      <td>8.3</td>
+      <td>25.4</td>
+      <td>21.0</td>
+      <td>13.7</td>
+      <td>46.7</td>
+      <td>221.7</td>
+    </tr>
+    <tr>
+      <th>Line 2</th>
+      <td>HINOMARU</td>
+      <td>87</td>
+      <td>95.7</td>
+      <td>9.0</td>
+      <td>23.4</td>
+      <td>18.6</td>
+      <td>12.7</td>
+      <td>39.0</td>
+      <td>199.0</td>
+      <td>87</td>
+      <td>99.8</td>
+      <td>7.7</td>
+      <td>23.6</td>
+      <td>17.3</td>
+      <td>12.0</td>
+      <td>41.8</td>
+      <td>213.0</td>
+    </tr>
+    <tr>
+      <th>Line 3</th>
+      <td>MANGOKU</td>
+      <td>93</td>
+      <td>109.7</td>
+      <td>9.0</td>
+      <td>24.6</td>
+      <td>20.7</td>
+      <td>16.7</td>
+      <td>36.0</td>
+      <td>210.0</td>
+      <td>91</td>
+      <td>106.0</td>
+      <td>10.7</td>
+      <td>23.6</td>
+      <td>18.3</td>
+      <td>14.7</td>
+      <td>32.0</td>
+      <td>177.7</td>
+    </tr>
+    <tr>
+      <th>Line 4</th>
+      <td>KAIRYO SHINKOU</td>
+      <td>89</td>
+      <td>82.6</td>
+      <td>9.0</td>
+      <td>22.8</td>
+      <td>16.1</td>
+      <td>9.7</td>
+      <td>26.3</td>
+      <td>139.7</td>
+      <td>87</td>
+      <td>86.3</td>
+      <td>7.3</td>
+      <td>25.3</td>
+      <td>19.6</td>
+      <td>12.7</td>
+      <td>35.7</td>
+      <td>182.0</td>
+    </tr>
+    <tr>
+      <th>Line 5</th>
+      <td>SENICHI</td>
+      <td>98</td>
+      <td>103.1</td>
+      <td>11.0</td>
+      <td>23.1</td>
+      <td>17.1</td>
+      <td>10.3</td>
+      <td>24.3</td>
+      <td>136.0</td>
+      <td>98</td>
+      <td>102.0</td>
+      <td>14.0</td>
+      <td>26.0</td>
+      <td>20.0</td>
+      <td>11.7</td>
+      <td>26.7</td>
+      <td>140.3</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>Line 165</th>
+      <td>HIMENOMOCHI</td>
+      <td>87</td>
+      <td>74.8</td>
+      <td>7.0</td>
+      <td>20.0</td>
+      <td>13.7</td>
+      <td>10.3</td>
+      <td>25.7</td>
+      <td>137.3</td>
+      <td>81</td>
+      <td>82.8</td>
+      <td>10.3</td>
+      <td>21.5</td>
+      <td>15.8</td>
+      <td>13.7</td>
+      <td>30.0</td>
+      <td>165.7</td>
+    </tr>
+    <tr>
+      <th>Line 166</th>
+      <td>SHINSHUU</td>
+      <td>92</td>
+      <td>91.3</td>
+      <td>16.0</td>
+      <td>20.1</td>
+      <td>13.4</td>
+      <td>11.7</td>
+      <td>9.7</td>
+      <td>93.0</td>
+      <td>91</td>
+      <td>85.8</td>
+      <td>11.3</td>
+      <td>20.3</td>
+      <td>14.5</td>
+      <td>10.3</td>
+      <td>16.0</td>
+      <td>102.0</td>
+    </tr>
+    <tr>
+      <th>Line 167</th>
+      <td>AICHI ASAHI_2***</td>
+      <td>113</td>
+      <td>84.3</td>
+      <td>12.0</td>
+      <td>23.4</td>
+      <td>16.7</td>
+      <td>9.0</td>
+      <td>23.0</td>
+      <td>123.7</td>
+      <td>107</td>
+      <td>88.3</td>
+      <td>10.7</td>
+      <td>24.8</td>
+      <td>18.6</td>
+      <td>10.0</td>
+      <td>25.7</td>
+      <td>141.0</td>
+    </tr>
+    <tr>
+      <th>Line 168</th>
+      <td>RAIDEN</td>
+      <td>113</td>
+      <td>111.8</td>
+      <td>11.0</td>
+      <td>26.4</td>
+      <td>19.7</td>
+      <td>11.7</td>
+      <td>36.7</td>
+      <td>183.0</td>
+      <td>109</td>
+      <td>108.3</td>
+      <td>8.7</td>
+      <td>24.7</td>
+      <td>18.9</td>
+      <td>12.3</td>
+      <td>36.3</td>
+      <td>165.3</td>
+    </tr>
+    <tr>
+      <th>Line 169</th>
+      <td>HOUMANSHINDEN INE</td>
+      <td>124</td>
+      <td>107.9</td>
+      <td>15.0</td>
+      <td>22.7</td>
+      <td>18.2</td>
+      <td>16.0</td>
+      <td>17.7</td>
+      <td>175.0</td>
+      <td>120</td>
+      <td>122.0</td>
+      <td>12.3</td>
+      <td>23.6</td>
+      <td>18.7</td>
+      <td>13.7</td>
+      <td>42.3</td>
+      <td>220.7</td>
+    </tr>
+  </tbody>
+</table>
+<p>169 rows × 17 columns</p>
+</div>
+</div>
+</div>
+<section id="data-pre-processing" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="data-pre-processing"><span class="header-section-number">5.1</span> Data pre-processing</h2>
+<p>Next, we’ll extract the data for the two years separately and merge them vertically in one dataframe. This reformating would be useful for subsequent analysis. We’ll also add column header to our dataframe. These headers would be the name of different parameters.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df_2015 <span class="op">=</span> df1[[<span class="dv">1</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>,<span class="dv">16</span>,<span class="dv">17</span>]]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df_2015.columns<span class="op">=</span>[<span class="st">"Variety"</span>,<span class="st">"Days-to-heading"</span>, <span class="st">"Culm length (cm)"</span>,<span class="st">"Panicle No."</span>, <span class="st">"Panicle length (cm)"</span>, <span class="st">"Rachis length (cm)"</span>, <span class="st">"Primary branch No."</span>, <span class="st">"Sec. branch No."</span>, <span class="st">"Spikelet No."</span>]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df_2015[<span class="st">"Year"</span>]<span class="op">=</span><span class="dv">2015</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>df_2015.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Variety</th>
+      <th>Days-to-heading</th>
+      <th>Culm length (cm)</th>
+      <th>Panicle No.</th>
+      <th>Panicle length (cm)</th>
+      <th>Rachis length (cm)</th>
+      <th>Primary branch No.</th>
+      <th>Sec. branch No.</th>
+      <th>Spikelet No.</th>
+      <th>Year</th>
+    </tr>
+    <tr>
+      <th>0</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Line 1</th>
+      <td>GORIKI</td>
+      <td>101</td>
+      <td>117.1</td>
+      <td>8.3</td>
+      <td>25.4</td>
+      <td>21.0</td>
+      <td>13.7</td>
+      <td>46.7</td>
+      <td>221.7</td>
+      <td>2015</td>
+    </tr>
+    <tr>
+      <th>Line 2</th>
+      <td>HINOMARU</td>
+      <td>87</td>
+      <td>99.8</td>
+      <td>7.7</td>
+      <td>23.6</td>
+      <td>17.3</td>
+      <td>12.0</td>
+      <td>41.8</td>
+      <td>213.0</td>
+      <td>2015</td>
+    </tr>
+    <tr>
+      <th>Line 3</th>
+      <td>MANGOKU</td>
+      <td>91</td>
+      <td>106.0</td>
+      <td>10.7</td>
+      <td>23.6</td>
+      <td>18.3</td>
+      <td>14.7</td>
+      <td>32.0</td>
+      <td>177.7</td>
+      <td>2015</td>
+    </tr>
+    <tr>
+      <th>Line 4</th>
+      <td>KAIRYO SHINKOU</td>
+      <td>87</td>
+      <td>86.3</td>
+      <td>7.3</td>
+      <td>25.3</td>
+      <td>19.6</td>
+      <td>12.7</td>
+      <td>35.7</td>
+      <td>182.0</td>
+      <td>2015</td>
+    </tr>
+    <tr>
+      <th>Line 5</th>
+      <td>SENICHI</td>
+      <td>98</td>
+      <td>102.0</td>
+      <td>14.0</td>
+      <td>26.0</td>
+      <td>20.0</td>
+      <td>11.7</td>
+      <td>26.7</td>
+      <td>140.3</td>
+      <td>2015</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Remove that columns from df1 that have been copied to df2 and add headers (same as that in df2) to df1. Also, add the year column to df1 such that df1 would now have data for only 2014.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df_2014 <span class="op">=</span> df1.drop(columns<span class="op">=</span>[<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>,<span class="dv">16</span>,<span class="dv">17</span>])</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df_2014.columns<span class="op">=</span>[<span class="st">"Variety"</span>,<span class="st">"Days-to-heading"</span>, <span class="st">"Culm length (cm)"</span>,<span class="st">"Panicle No."</span>, <span class="st">"Panicle length (cm)"</span>, <span class="st">"Rachis length (cm)"</span>, <span class="st">"Primary branch No."</span>, <span class="st">"Sec. branch No."</span>, <span class="st">"Spikelet No."</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>df_2014[<span class="st">"Year"</span>]<span class="op">=</span><span class="dv">2014</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df_2014.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Variety</th>
+      <th>Days-to-heading</th>
+      <th>Culm length (cm)</th>
+      <th>Panicle No.</th>
+      <th>Panicle length (cm)</th>
+      <th>Rachis length (cm)</th>
+      <th>Primary branch No.</th>
+      <th>Sec. branch No.</th>
+      <th>Spikelet No.</th>
+      <th>Year</th>
+    </tr>
+    <tr>
+      <th>0</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Line 1</th>
+      <td>GORIKI</td>
+      <td>98</td>
+      <td>112.0</td>
+      <td>7.0</td>
+      <td>26.7</td>
+      <td>19.6</td>
+      <td>12.7</td>
+      <td>41.3</td>
+      <td>206.3</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>Line 2</th>
+      <td>HINOMARU</td>
+      <td>87</td>
+      <td>95.7</td>
+      <td>9.0</td>
+      <td>23.4</td>
+      <td>18.6</td>
+      <td>12.7</td>
+      <td>39.0</td>
+      <td>199.0</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>Line 3</th>
+      <td>MANGOKU</td>
+      <td>93</td>
+      <td>109.7</td>
+      <td>9.0</td>
+      <td>24.6</td>
+      <td>20.7</td>
+      <td>16.7</td>
+      <td>36.0</td>
+      <td>210.0</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>Line 4</th>
+      <td>KAIRYO SHINKOU</td>
+      <td>89</td>
+      <td>82.6</td>
+      <td>9.0</td>
+      <td>22.8</td>
+      <td>16.1</td>
+      <td>9.7</td>
+      <td>26.3</td>
+      <td>139.7</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>Line 5</th>
+      <td>SENICHI</td>
+      <td>98</td>
+      <td>103.1</td>
+      <td>11.0</td>
+      <td>23.1</td>
+      <td>17.1</td>
+      <td>10.3</td>
+      <td>24.3</td>
+      <td>136.0</td>
+      <td>2014</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Now we have two dataframes having plant parameters for the two years i.e.&nbsp;df1 and df2 corresponding to 2014 and 2015, respectively. Let’s combine these two dataframes vertically to get the full data as one dataframe.</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df_final <span class="op">=</span> pd.concat([df1,df2])</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df_final</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Variety</th>
+      <th>Days-to-heading</th>
+      <th>Culm length (cm)</th>
+      <th>Panicle No.</th>
+      <th>Panicle length (cm)</th>
+      <th>Rachis length (cm)</th>
+      <th>Primary branch No.</th>
+      <th>Sec. branch No.</th>
+      <th>Spikelet No.</th>
+      <th>Year</th>
+    </tr>
+    <tr>
+      <th>0</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Line 1</th>
+      <td>GORIKI</td>
+      <td>98</td>
+      <td>112.0</td>
+      <td>7.0</td>
+      <td>26.7</td>
+      <td>19.6</td>
+      <td>12.7</td>
+      <td>41.3</td>
+      <td>206.3</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>Line 2</th>
+      <td>HINOMARU</td>
+      <td>87</td>
+      <td>95.7</td>
+      <td>9.0</td>
+      <td>23.4</td>
+      <td>18.6</td>
+      <td>12.7</td>
+      <td>39.0</td>
+      <td>199.0</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>Line 3</th>
+      <td>MANGOKU</td>
+      <td>93</td>
+      <td>109.7</td>
+      <td>9.0</td>
+      <td>24.6</td>
+      <td>20.7</td>
+      <td>16.7</td>
+      <td>36.0</td>
+      <td>210.0</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>Line 4</th>
+      <td>KAIRYO SHINKOU</td>
+      <td>89</td>
+      <td>82.6</td>
+      <td>9.0</td>
+      <td>22.8</td>
+      <td>16.1</td>
+      <td>9.7</td>
+      <td>26.3</td>
+      <td>139.7</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>Line 5</th>
+      <td>SENICHI</td>
+      <td>98</td>
+      <td>103.1</td>
+      <td>11.0</td>
+      <td>23.1</td>
+      <td>17.1</td>
+      <td>10.3</td>
+      <td>24.3</td>
+      <td>136.0</td>
+      <td>2014</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>Line 165</th>
+      <td>HIMENOMOCHI</td>
+      <td>81</td>
+      <td>82.8</td>
+      <td>10.3</td>
+      <td>21.5</td>
+      <td>15.8</td>
+      <td>13.7</td>
+      <td>30.0</td>
+      <td>165.7</td>
+      <td>2015</td>
+    </tr>
+    <tr>
+      <th>Line 166</th>
+      <td>SHINSHUU</td>
+      <td>91</td>
+      <td>85.8</td>
+      <td>11.3</td>
+      <td>20.3</td>
+      <td>14.5</td>
+      <td>10.3</td>
+      <td>16.0</td>
+      <td>102.0</td>
+      <td>2015</td>
+    </tr>
+    <tr>
+      <th>Line 167</th>
+      <td>AICHI ASAHI_2***</td>
+      <td>107</td>
+      <td>88.3</td>
+      <td>10.7</td>
+      <td>24.8</td>
+      <td>18.6</td>
+      <td>10.0</td>
+      <td>25.7</td>
+      <td>141.0</td>
+      <td>2015</td>
+    </tr>
+    <tr>
+      <th>Line 168</th>
+      <td>RAIDEN</td>
+      <td>109</td>
+      <td>108.3</td>
+      <td>8.7</td>
+      <td>24.7</td>
+      <td>18.9</td>
+      <td>12.3</td>
+      <td>36.3</td>
+      <td>165.3</td>
+      <td>2015</td>
+    </tr>
+    <tr>
+      <th>Line 169</th>
+      <td>HOUMANSHINDEN INE</td>
+      <td>120</td>
+      <td>122.0</td>
+      <td>12.3</td>
+      <td>23.6</td>
+      <td>18.7</td>
+      <td>13.7</td>
+      <td>42.3</td>
+      <td>220.7</td>
+      <td>2015</td>
+    </tr>
+  </tbody>
+</table>
+<p>338 rows × 10 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="144">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df_temp <span class="op">=</span> df_final.reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sns.pairplot(data<span class="op">=</span>df_temp.iloc[:,<span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">10</span>)], hue<span class="op">=</span><span class="st">"Year"</span>, palette<span class="op">=</span><span class="st">"deep"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="144">
+<pre><code>&lt;seaborn.axisgrid.PairGrid at 0x1376039d0&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="PCA_tutorial_files/figure-html/cell-9-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="model-building" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="model-building"><span class="header-section-number">5.2</span> Model building</h2>
+<p>Perform the PCA using the normalized feature vectors to generate five components. We’ll first create an object of the PCA class with five as the value for n_components argument. Subsequently we’ll use the normalized matrix to generate principle components and save the results to a dataframe. We’ll first do PCA of the 2015 data only.</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exclude the Variety column</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df_2015.iloc[:,[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Days-to-heading</th>
+      <th>Culm length (cm)</th>
+      <th>Panicle No.</th>
+      <th>Panicle length (cm)</th>
+      <th>Rachis length (cm)</th>
+      <th>Primary branch No.</th>
+      <th>Sec. branch No.</th>
+      <th>Spikelet No.</th>
+    </tr>
+    <tr>
+      <th>0</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Line 1</th>
+      <td>101</td>
+      <td>117.1</td>
+      <td>8.3</td>
+      <td>25.4</td>
+      <td>21.0</td>
+      <td>13.7</td>
+      <td>46.7</td>
+      <td>221.7</td>
+    </tr>
+    <tr>
+      <th>Line 2</th>
+      <td>87</td>
+      <td>99.8</td>
+      <td>7.7</td>
+      <td>23.6</td>
+      <td>17.3</td>
+      <td>12.0</td>
+      <td>41.8</td>
+      <td>213.0</td>
+    </tr>
+    <tr>
+      <th>Line 3</th>
+      <td>91</td>
+      <td>106.0</td>
+      <td>10.7</td>
+      <td>23.6</td>
+      <td>18.3</td>
+      <td>14.7</td>
+      <td>32.0</td>
+      <td>177.7</td>
+    </tr>
+    <tr>
+      <th>Line 4</th>
+      <td>87</td>
+      <td>86.3</td>
+      <td>7.3</td>
+      <td>25.3</td>
+      <td>19.6</td>
+      <td>12.7</td>
+      <td>35.7</td>
+      <td>182.0</td>
+    </tr>
+    <tr>
+      <th>Line 5</th>
+      <td>98</td>
+      <td>102.0</td>
+      <td>14.0</td>
+      <td>26.0</td>
+      <td>20.0</td>
+      <td>11.7</td>
+      <td>26.7</td>
+      <td>140.3</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>Line 165</th>
+      <td>81</td>
+      <td>82.8</td>
+      <td>10.3</td>
+      <td>21.5</td>
+      <td>15.8</td>
+      <td>13.7</td>
+      <td>30.0</td>
+      <td>165.7</td>
+    </tr>
+    <tr>
+      <th>Line 166</th>
+      <td>91</td>
+      <td>85.8</td>
+      <td>11.3</td>
+      <td>20.3</td>
+      <td>14.5</td>
+      <td>10.3</td>
+      <td>16.0</td>
+      <td>102.0</td>
+    </tr>
+    <tr>
+      <th>Line 167</th>
+      <td>107</td>
+      <td>88.3</td>
+      <td>10.7</td>
+      <td>24.8</td>
+      <td>18.6</td>
+      <td>10.0</td>
+      <td>25.7</td>
+      <td>141.0</td>
+    </tr>
+    <tr>
+      <th>Line 168</th>
+      <td>109</td>
+      <td>108.3</td>
+      <td>8.7</td>
+      <td>24.7</td>
+      <td>18.9</td>
+      <td>12.3</td>
+      <td>36.3</td>
+      <td>165.3</td>
+    </tr>
+    <tr>
+      <th>Line 169</th>
+      <td>120</td>
+      <td>122.0</td>
+      <td>12.3</td>
+      <td>23.6</td>
+      <td>18.7</td>
+      <td>13.7</td>
+      <td>42.3</td>
+      <td>220.7</td>
+    </tr>
+  </tbody>
+</table>
+<p>169 rows × 8 columns</p>
+</div>
+</div>
+</div>
+<p><strong>Normalization</strong></p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pca_2015_standard <span class="op">=</span> StandardScaler().fit_transform(df_2015.iloc[:,[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Fit the data and create a dataframe of principle components</strong></p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pca_2015_model <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">5</span>) <span class="co">#number of principal components</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>pca_2015_fit <span class="op">=</span> pca_2015_model.fit_transform(pca_2015_standard) </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>df_2015_pca <span class="op">=</span> pd.DataFrame(data <span class="op">=</span> pca_2015_fit, columns <span class="op">=</span> [<span class="st">'pc1'</span>, <span class="st">'pc2'</span>,<span class="st">'pc3'</span>,<span class="st">'pc4'</span>,<span class="st">'pc5'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The variance in the data as explained by each of the component can be check by the <code>explained_variance_ratio_</code> of the pca object. The output is the variance associated with each of the principal components (five in this case). We can also calculate the total variance explained by the five components. As we see below the five components together account for 95.9% variance in the data.</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pca_2015_model.explained_variance_ratio_)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pca_2015_model.explained_variance_ratio_.cumsum())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.62283251 0.16410666 0.07756149 0.05617533 0.03833603]
+[0.62283251 0.78693917 0.86450066 0.92067599 0.95901202]</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pca_2015_model.components_</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>array([[-0.16505669, -0.36898558,  0.24285994, -0.3816588 , -0.408246  ,
+        -0.3591661 , -0.40835848, -0.41175211],
+       [-0.7266037 , -0.2441704 , -0.47751906, -0.21155821, -0.13636855,
+         0.2424033 ,  0.15019558,  0.19932913],
+       [-0.22625375,  0.20730652,  0.74838672, -0.30732605, -0.09178569,
+         0.41958235,  0.14012806,  0.21723589],
+       [-0.41965494, -0.32972906,  0.31061083,  0.53659936,  0.50113939,
+         0.04226267, -0.23352974, -0.15260259],
+       [ 0.30823769, -0.18116406, -0.18564851, -0.1950358 ,  0.12892964,
+         0.73701089, -0.43027916, -0.23391603]])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df_2015_pca.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>pc1</th>
+      <th>pc2</th>
+      <th>pc3</th>
+      <th>pc4</th>
+      <th>pc5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-4.241790</td>
+      <td>0.275651</td>
+      <td>0.358924</td>
+      <td>-0.495200</td>
+      <td>-0.275406</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-2.030945</td>
+      <td>1.637908</td>
+      <td>0.070001</td>
+      <td>-0.686920</td>
+      <td>-0.911864</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-1.854638</td>
+      <td>0.671051</td>
+      <td>1.212392</td>
+      <td>0.068783</td>
+      <td>0.847572</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-1.925394</td>
+      <td>1.483075</td>
+      <td>-0.648590</td>
+      <td>0.746669</td>
+      <td>0.069074</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.947741</td>
+      <td>-1.384563</td>
+      <td>0.557716</td>
+      <td>1.403352</td>
+      <td>-0.043060</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-scrolled="true" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df_2015_pca.plot.scatter(x<span class="op">=</span><span class="st">"pc1"</span>,y<span class="op">=</span><span class="st">"pc2"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="PCA_tutorial_files/figure-html/cell-16-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Let’s plot the percentage variance explained vs the components. This plot would have to graphs with bars showing the vairance explained by each component and line showing the cumulative sum of the percent variance explained.</p>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fig, ax1 <span class="op">=</span> plt.subplots()</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>ax2 <span class="op">=</span> ax1.twinx()</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>ax1.bar(<span class="bu">range</span>(<span class="bu">len</span>(pca_2015_model.explained_variance_ratio_)), <span class="op">\</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        pca_2015_model.explained_variance_ratio_, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>ax2.plot(pca_2015_model.explained_variance_ratio_.cumsum())</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>ax2.scatter(<span class="bu">range</span>(<span class="bu">len</span>(pca_2015_model.explained_variance_ratio_)), <span class="op">\</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>            pca_2015_model.explained_variance_ratio_.cumsum())</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>ax2.set_ylim([<span class="dv">0</span>,<span class="dv">1</span>])</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">"Percent Explained"</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>ax2.set_ylabel(<span class="st">"Cummulative Sum"</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">"Principal Components"</span>)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>plt.xticks(ticks<span class="op">=</span><span class="bu">range</span>(<span class="bu">len</span>(pca_2015_model.explained_variance_ratio_)), <span class="op">\</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>           labels<span class="op">=</span>[<span class="st">"PC1"</span>, <span class="st">"PC2"</span>, <span class="st">"PC3"</span>, <span class="st">"PC4"</span>, <span class="st">"PC5"</span>])</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="PCA_tutorial_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="pca-loadings" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="pca-loadings"><span class="header-section-number">5.3</span> PCA Loadings</h2>
+<p>The loadings value range from -1 to 1 such that its value close to either end (1 or -1) is indicative of a strong influence of a particular feature to a specific component. Loadings can be thought of as analogous to correlation coefficient. To get the loadings we need to mutiple the eigenvectors with the square-root of egienvalues (<a href="https://stats.stackexchange.com/questions/143905/loadings-vs-eigenvectors-in-pca-when-to-use-one-or-another">reference</a>).</p>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pca_2015_model.explained_variance_</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>array([5.01231878, 1.3206679 , 0.62418533, 0.45207762, 0.30851375])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>loadings2 <span class="op">=</span> pca_2015_model.components_.T <span class="op">*</span> np.sqrt(pca_2015_model.explained_variance_)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>loading_matrix <span class="op">=</span> pd.DataFrame(loadings2, columns<span class="op">=</span>[<span class="st">'pc1'</span>, <span class="st">'pc2'</span>,<span class="st">'pc3'</span>,<span class="st">'pc4'</span>,<span class="st">'pc5'</span>], index<span class="op">=</span>df_2015.columns.values[<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>loading_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>pc1</th>
+      <th>pc2</th>
+      <th>pc3</th>
+      <th>pc4</th>
+      <th>pc5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Days-to-heading</th>
+      <td>-0.369532</td>
+      <td>-0.835015</td>
+      <td>-0.178753</td>
+      <td>-0.282162</td>
+      <td>0.171208</td>
+    </tr>
+    <tr>
+      <th>Culm length (cm)</th>
+      <td>-0.826093</td>
+      <td>-0.280601</td>
+      <td>0.163783</td>
+      <td>-0.221699</td>
+      <td>-0.100626</td>
+    </tr>
+    <tr>
+      <th>Panicle No.</th>
+      <td>0.543720</td>
+      <td>-0.548766</td>
+      <td>0.591266</td>
+      <td>0.208845</td>
+      <td>-0.103117</td>
+    </tr>
+    <tr>
+      <th>Panicle length (cm)</th>
+      <td>-0.854466</td>
+      <td>-0.243123</td>
+      <td>-0.242804</td>
+      <td>0.360792</td>
+      <td>-0.108331</td>
+    </tr>
+    <tr>
+      <th>Rachis length (cm)</th>
+      <td>-0.913990</td>
+      <td>-0.156715</td>
+      <td>-0.072516</td>
+      <td>0.336950</td>
+      <td>0.071613</td>
+    </tr>
+    <tr>
+      <th>Primary branch No.</th>
+      <td>-0.804109</td>
+      <td>0.278571</td>
+      <td>0.331493</td>
+      <td>0.028416</td>
+      <td>0.409365</td>
+    </tr>
+    <tr>
+      <th>Sec. branch No.</th>
+      <td>-0.914241</td>
+      <td>0.172605</td>
+      <td>0.110709</td>
+      <td>-0.157018</td>
+      <td>-0.238994</td>
+    </tr>
+    <tr>
+      <th>Spikelet No.</th>
+      <td>-0.921839</td>
+      <td>0.229070</td>
+      <td>0.171628</td>
+      <td>-0.102605</td>
+      <td>-0.129926</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The signs for the loadings are arbitary. The absolute number represents the correlation with the corresponding pincipal component. The opposite signs for the components indicate negative correlation within the components.</p>
+</section>
+<section id="biplot" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="biplot"><span class="header-section-number">5.4</span> Biplot</h2>
+<p>Biplot is a useful visualization methods for PCA as gives information about relationship of different features with principal components. This plot comprises of two plots (hence the name): 1. A scatter plot showing transformed data along the first two principle components 2. PCA loadings as arrows</p>
+<p>Visual analysis of this plot can give information about the extent to which different features affect a specific principal components.</p>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>coeff <span class="op">=</span> loading_matrix.values</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>plt.scatter(pca_2015_fit[:,<span class="dv">0</span>], pca_2015_fit[:,<span class="dv">1</span>], marker<span class="op">=</span><span class="st">'.'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">8</span>):</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    plt.arrow(<span class="dv">0</span>, <span class="dv">0</span>, coeff[i,<span class="dv">0</span>], coeff[i,<span class="dv">1</span>], color <span class="op">=</span> <span class="st">'k'</span>, <span class="op">\</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>              alpha<span class="op">=</span><span class="fl">0.5</span>, linestyle <span class="op">=</span> <span class="st">'-'</span>,linewidth <span class="op">=</span> <span class="fl">1.5</span>, overhang<span class="op">=</span><span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="PCA_tutorial_files/figure-html/cell-20-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Customising the biplot to match the figure given in the manuscript. The circle in the graph represents 100% variance explained.</p>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#coeff = np.transpose(pca_2015.components_[0:2, :])</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>coeff <span class="op">=</span> loading_matrix.values</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">8</span>):</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        plt.arrow(<span class="dv">0</span>, <span class="dv">0</span>, coeff[i,<span class="dv">0</span>], coeff[i,<span class="dv">1</span>], color <span class="op">=</span> <span class="st">'k'</span>, alpha <span class="op">=</span> <span class="fl">0.9</span>, <span class="op">\</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>                  linestyle <span class="op">=</span> <span class="st">'-'</span>,linewidth <span class="op">=</span> <span class="fl">1.5</span>, overhang<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        plt.text(coeff[i,<span class="dv">0</span>]<span class="op">*</span><span class="fl">1.25</span>, coeff[i,<span class="dv">1</span>]<span class="op">*</span><span class="fl">1.25</span>, <span class="op">\</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>                 df_2015.columns.values[<span class="dv">1</span>:<span class="op">-</span><span class="dv">1</span>][i], color <span class="op">=</span> <span class="st">'k'</span>, ha <span class="op">=</span> <span class="st">'center'</span>, <span class="op">\</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>                 va <span class="op">=</span> <span class="st">'center'</span>,fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>circle1 <span class="op">=</span> plt.Circle((<span class="dv">0</span>, <span class="dv">0</span>), <span class="dv">1</span>, color<span class="op">=</span><span class="st">'grey'</span>,fill<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>plt.gca().add_patch(circle1)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">0</span>], [<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>], color<span class="op">=</span><span class="st">'grey'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">0</span>], color<span class="op">=</span><span class="st">'grey'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>plt.gca().set_box_aspect(<span class="dv">1</span>)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="ss">f"PC1 (</span><span class="sc">{</span>pca_2015_model<span class="sc">.</span>explained_variance_ratio_[<span class="dv">0</span>]<span class="op">*</span><span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="ss">f"PC2 (</span><span class="sc">{</span>pca_2015_model<span class="sc">.</span>explained_variance_ratio_[<span class="dv">1</span>]<span class="op">*</span><span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>plt.yticks(ticks<span class="op">=</span>[<span class="op">-</span><span class="dv">1</span>,<span class="op">-</span><span class="fl">0.5</span>,<span class="dv">0</span>,<span class="fl">0.5</span>,<span class="dv">1</span>])</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"PCA loading for the 2015 data"</span>)</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="PCA_tutorial_files/figure-html/cell-21-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Compare the above graph with Figure 1B of <a href="https://www.pnas.org/doi/pdf/10.1073/pnas.1904964116">this manuscript</a>. For a discussion on the results see the <a href="https://www.pnas.org/doi/full/10.1073/pnas.1904964116">supplementary material</a>.</p>
+<section id="exercise" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="exercise">Exercise</h3>
+<p>Create a figure showing PCA loadings for the 2014 data.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./ML_supervised.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Copyright 2022, bioinfo.guru</div>   
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.facebook.com/profile.php?id=100078250833738">
+      <i class="bi bi-facebook" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.instagram.com/bioinfo.guru/">
+      <i class="bi bi-instagram" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/bioinfo-guru-68a8b7231/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/bioinfo_guru">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>
