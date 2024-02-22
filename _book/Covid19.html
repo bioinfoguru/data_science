@@ -1,243 +1,346 @@
+
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.38">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science - 1&nbsp; Covid19 data analysis</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
+<html lang="en" data-content_root="./" >
 
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<link href="./Interactive_visual.html" rel="next">
-<link href="./index.html" rel="prev">
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<script id="quarto-search-options" type="application/json">{
-  "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
-  }
-}</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+    <title>Covid19 data analysis &#8212; Data Science</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
+  
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-<link rel="stylesheet" href="custom_css.css">
-</head>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-<body class="nav-sidebar floating">
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script type="application/vnd.jupyter.widget-state+json">{"state": {"7029aa2847274493858621f4415a4361": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "0dedf7c29dd5472881f6d36a29d73ed0": {"model_name": "OutputModel", "model_module": "@jupyter-widgets/output", "model_module_version": "1.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/output", "_model_module_version": "1.0.0", "_model_name": "OutputModel", "_view_count": null, "_view_module": "@jupyter-widgets/output", "_view_module_version": "1.0.0", "_view_name": "OutputView", "layout": "IPY_MODEL_7029aa2847274493858621f4415a4361", "msg_id": "", "outputs": [{"output_type": "display_data", "metadata": {}, "data": {"text/plain": "<pandas.io.formats.style.Styler at 0x17858d667c0>", "text/html": "<style type=\"text/css\">\n</style>\n<table id=\"T_795df\">\n  <caption>Date as object data type</caption>\n  <thead>\n    <tr>\n      <th class=\"blank level0\" >&nbsp;</th>\n      <th id=\"T_795df_level0_col0\" class=\"col_heading level0 col0\" >date</th>\n      <th id=\"T_795df_level0_col1\" class=\"col_heading level0 col1\" >new_cases</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th id=\"T_795df_level0_row0\" class=\"row_heading level0 row0\" >0</th>\n      <td id=\"T_795df_row0_col0\" class=\"data row0 col0\" >April</td>\n      <td id=\"T_795df_row0_col1\" class=\"data row0 col1\" >53,413</td>\n    </tr>\n    <tr>\n      <th id=\"T_795df_level0_row1\" class=\"row_heading level0 row1\" >1</th>\n      <td id=\"T_795df_row1_col0\" class=\"data row1 col0\" >August</td>\n      <td id=\"T_795df_row1_col1\" class=\"data row1 col1\" >400,064</td>\n    </tr>\n    <tr>\n      <th id=\"T_795df_level0_row2\" class=\"row_heading level0 row2\" >2</th>\n      <td id=\"T_795df_row2_col0\" class=\"data row2 col0\" >February</td>\n      <td id=\"T_795df_row2_col1\" class=\"data row2 col1\" >1,461,546</td>\n    </tr>\n    <tr>\n      <th id=\"T_795df_level0_row3\" class=\"row_heading level0 row3\" >3</th>\n      <td id=\"T_795df_row3_col0\" class=\"data row3 col0\" >January</td>\n      <td id=\"T_795df_row3_col1\" class=\"data row3 col1\" >6,607,920</td>\n    </tr>\n    <tr>\n      <th id=\"T_795df_level0_row4\" class=\"row_heading level0 row4\" >4</th>\n      <td id=\"T_795df_row4_col0\" class=\"data row4 col0\" >July</td>\n      <td id=\"T_795df_row4_col1\" class=\"data row4 col1\" >567,041</td>\n    </tr>\n    <tr>\n      <th id=\"T_795df_level0_row5\" class=\"row_heading level0 row5\" >5</th>\n      <td id=\"T_795df_row5_col0\" class=\"data row5 col0\" >June</td>\n      <td id=\"T_795df_row5_col1\" class=\"data row5 col1\" >308,402</td>\n    </tr>\n    <tr>\n      <th id=\"T_795df_level0_row6\" class=\"row_heading level0 row6\" >6</th>\n      <td id=\"T_795df_row6_col0\" class=\"data row6 col0\" >March</td>\n      <td id=\"T_795df_row6_col1\" class=\"data row6 col1\" >94,730</td>\n    </tr>\n    <tr>\n      <th id=\"T_795df_level0_row7\" class=\"row_heading level0 row7\" >7</th>\n      <td id=\"T_795df_row7_col0\" class=\"data row7 col0\" >May</td>\n      <td id=\"T_795df_row7_col1\" class=\"data row7 col1\" >81,644</td>\n    </tr>\n    <tr>\n      <th id=\"T_795df_level0_row8\" class=\"row_heading level0 row8\" >8</th>\n      <td id=\"T_795df_row8_col0\" class=\"data row8 col0\" >September</td>\n      <td id=\"T_795df_row8_col1\" class=\"data row8 col1\" >33,322</td>\n    </tr>\n  </tbody>\n</table>\n"}}]}}, "0cc7b24ec916460aad96fd04c538c2db": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "246cf93fcaff45bca0008891129df509": {"model_name": "OutputModel", "model_module": "@jupyter-widgets/output", "model_module_version": "1.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/output", "_model_module_version": "1.0.0", "_model_name": "OutputModel", "_view_count": null, "_view_module": "@jupyter-widgets/output", "_view_module_version": "1.0.0", "_view_name": "OutputView", "layout": "IPY_MODEL_0cc7b24ec916460aad96fd04c538c2db", "msg_id": "", "outputs": [{"output_type": "display_data", "metadata": {}, "data": {"text/plain": "<pandas.io.formats.style.Styler at 0x17858d83850>", "text/html": "<style type=\"text/css\">\n</style>\n<table id=\"T_0516e\">\n  <caption>Date as catagorical data type</caption>\n  <thead>\n    <tr>\n      <th class=\"blank level0\" >&nbsp;</th>\n      <th id=\"T_0516e_level0_col0\" class=\"col_heading level0 col0\" >date</th>\n      <th id=\"T_0516e_level0_col1\" class=\"col_heading level0 col1\" >new_cases</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th id=\"T_0516e_level0_row0\" class=\"row_heading level0 row0\" >0</th>\n      <td id=\"T_0516e_row0_col0\" class=\"data row0 col0\" >January</td>\n      <td id=\"T_0516e_row0_col1\" class=\"data row0 col1\" >6,607,920</td>\n    </tr>\n    <tr>\n      <th id=\"T_0516e_level0_row1\" class=\"row_heading level0 row1\" >1</th>\n      <td id=\"T_0516e_row1_col0\" class=\"data row1 col0\" >February</td>\n      <td id=\"T_0516e_row1_col1\" class=\"data row1 col1\" >1,461,546</td>\n    </tr>\n    <tr>\n      <th id=\"T_0516e_level0_row2\" class=\"row_heading level0 row2\" >2</th>\n      <td id=\"T_0516e_row2_col0\" class=\"data row2 col0\" >March</td>\n      <td id=\"T_0516e_row2_col1\" class=\"data row2 col1\" >94,730</td>\n    </tr>\n    <tr>\n      <th id=\"T_0516e_level0_row3\" class=\"row_heading level0 row3\" >3</th>\n      <td id=\"T_0516e_row3_col0\" class=\"data row3 col0\" >April</td>\n      <td id=\"T_0516e_row3_col1\" class=\"data row3 col1\" >53,413</td>\n    </tr>\n    <tr>\n      <th id=\"T_0516e_level0_row4\" class=\"row_heading level0 row4\" >4</th>\n      <td id=\"T_0516e_row4_col0\" class=\"data row4 col0\" >May</td>\n      <td id=\"T_0516e_row4_col1\" class=\"data row4 col1\" >81,644</td>\n    </tr>\n    <tr>\n      <th id=\"T_0516e_level0_row5\" class=\"row_heading level0 row5\" >5</th>\n      <td id=\"T_0516e_row5_col0\" class=\"data row5 col0\" >June</td>\n      <td id=\"T_0516e_row5_col1\" class=\"data row5 col1\" >308,402</td>\n    </tr>\n    <tr>\n      <th id=\"T_0516e_level0_row6\" class=\"row_heading level0 row6\" >6</th>\n      <td id=\"T_0516e_row6_col0\" class=\"data row6 col0\" >July</td>\n      <td id=\"T_0516e_row6_col1\" class=\"data row6 col1\" >567,041</td>\n    </tr>\n    <tr>\n      <th id=\"T_0516e_level0_row7\" class=\"row_heading level0 row7\" >7</th>\n      <td id=\"T_0516e_row7_col0\" class=\"data row7 col0\" >August</td>\n      <td id=\"T_0516e_row7_col1\" class=\"data row7 col1\" >400,064</td>\n    </tr>\n    <tr>\n      <th id=\"T_0516e_level0_row8\" class=\"row_heading level0 row8\" >8</th>\n      <td id=\"T_0516e_row8_col0\" class=\"data row8 col0\" >September</td>\n      <td id=\"T_0516e_row8_col1\" class=\"data row8 col1\" >33,322</td>\n    </tr>\n  </tbody>\n</table>\n"}}]}}, "d67103bc474245f1b565fb9c8022dfe3": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "9f1c7d7a355a4fe9916d72c13e23cb86": {"model_name": "HBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_0dedf7c29dd5472881f6d36a29d73ed0", "IPY_MODEL_246cf93fcaff45bca0008891129df509"], "layout": "IPY_MODEL_d67103bc474245f1b565fb9c8022dfe3"}}}, "version_major": 2, "version_minor": 0}</script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script crossorigin="anonymous" data-jupyter-widgets-cdn="https://cdn.jsdelivr.net/npm/" src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@1.0.6/dist/embed-amd.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Covid19';</script>
+    <link rel="icon" href="_static/logo_final_transparent.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Interactive data visualization" href="Interactive_visual.html" />
+    <link rel="prev" title="Preface" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-<div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Covid19 data analysis</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
-      </button>
-    </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
-<!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./" class="sidebar-logo-link">
-      <img src="./logo_horizontal_transparent.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
-      </a>
-    <div class="sidebar-title mb-0 py-0">
-      <a href="./">Data Science</a> 
-        <div class="sidebar-tools-main">
-  <a href="" class="quarto-color-scheme-toggle sidebar-tool" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-  <a href="" class="quarto-reader-toggle sidebar-tool" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
-  <div class="quarto-reader-toggle-btn">
-  <i class="bi"></i>
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
   </div>
-</a>
-</div>
-    </div>
-      </div>
-    <div class="sidebar-menu-container"> 
-    <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./Covid19.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Covid19 data analysis</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./Interactive_visual.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Interactive data visualization</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./kmeans.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unsupervised learning</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./ML_supervised.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./PCA_tutorial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></a>
-  </div>
-</li>
-    </ul>
-    </div>
-</nav>
-<!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#changing-axis-scale" id="toc-changing-axis-scale" class="nav-link active" data-scroll-target="#changing-axis-scale"> <span class="header-section-number">1.1</span> Changing axis scale</a></li>
-  <li><a href="#function-to-plot-total-cases" id="toc-function-to-plot-total-cases" class="nav-link" data-scroll-target="#function-to-plot-total-cases"> <span class="header-section-number">1.2</span> Function to plot total cases</a></li>
-  <li><a href="#seaborn-library" id="toc-seaborn-library" class="nav-link" data-scroll-target="#seaborn-library"> <span class="header-section-number">1.3</span> Seaborn library</a></li>
-  </ul>
-</nav>
-    </div>
-<!-- main -->
-<main class="content" id="quarto-document-content">
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Covid19 data analysis</span></h1>
-</div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
 
-
-
-<div class="quarto-title-meta">
-
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
     
     
   </div>
   
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
 
-</header>
+  
 
-<p>Data analysis often requiring pre-processing of the data before the actual analysis. One must have a good understanding of not only the contents of the data but also must pay attention to the layout of the data. Many a times it is imperative to change the layout of the data to perform the analysis that we intend to do. We’ll now look at some of these concepts in action using the Covid19 data avaiable from Our World in Data. The csv file is available <a href="https://github.com/owid/covid-19-data/blob/master/public/data/owid-covid-data.csv">here</a>.</p>
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo_final_horizontal.png" class="logo__image only-light" alt="Data Science - Home"/>
+    <script>document.write(`<img src="_static/logo_final_horizontal.png" class="logo__image only-dark" alt="Data Science - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Data visualization</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Covid19 data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Interactive_visual.html">Interactive data visualization</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Machine Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="kmeans.html">Unsupervised learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ML_supervised.html">Supervised learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PCA_tutorial.html">Principal Component Analysis</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
 </div>
-<div class="cell" data-scrolled="true" data-execution_count="230">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="op">=</span> pd.read_csv(<span class="st">"owid-covid-data.csv"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df1.shape)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df1.tail()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(214477, 67)</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="230">
+              
+              
 
-<div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Covid19 data analysis</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-axis-scale">Changing axis scale</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#function-to-plot-total-cases">Function to plot total cases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-datetime-object">The datetime object</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#categorical-variables">Categorical variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-visualization">Data visualization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geopandas">Geopandas</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
 
-<table class="dataframe table table-sm table-striped">
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="covid19-data-analysis">
+<h1>Covid19 data analysis<a class="headerlink" href="#covid19-data-analysis" title="Link to this heading">#</a></h1>
+<p>Data analysis often requiring pre-processing of the data before the actual analysis. One must have a good understanding of not only the contents of the data but also must pay attention to the layout of the data. Many a times it is imperative to change the layout of the data to perform the analysis that we intend to do. We’ll now look at some of these concepts in action using the Covid19 data avaiable from Our World in Data. The csv file is available <a class="reference external" href="https://github.com/owid/covid-19-data/blob/master/public/data/owid-covid-data.csv">here</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;owid-covid-data.csv&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">df1</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(214477, 67)
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
   <thead>
-    <tr>
+    <tr style="text-align: right;">
       <th></th>
       <th>iso_code</th>
       <th>continent</th>
@@ -386,129 +489,152 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </tbody>
 </table>
 <p>5 rows × 67 columns</p>
+</div></div></div>
+</div>
+<p>This is a large dataset having thousands of rows and multiple columns. First, lets check what all information we have in this dataset i.e. what all columns are there. This can be achived by <code class="docutils literal notranslate"><span class="pre">columns</span></code> attribute of the dataframe. Please refer to the Our World in Data website for more information about the contents of this dataset.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df1</span><span class="o">.</span><span class="n">columns</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;iso_code&#39;, &#39;continent&#39;, &#39;location&#39;, &#39;date&#39;, &#39;total_cases&#39;, &#39;new_cases&#39;,
+       &#39;new_cases_smoothed&#39;, &#39;total_deaths&#39;, &#39;new_deaths&#39;,
+       &#39;new_deaths_smoothed&#39;, &#39;total_cases_per_million&#39;,
+       &#39;new_cases_per_million&#39;, &#39;new_cases_smoothed_per_million&#39;,
+       &#39;total_deaths_per_million&#39;, &#39;new_deaths_per_million&#39;,
+       &#39;new_deaths_smoothed_per_million&#39;, &#39;reproduction_rate&#39;, &#39;icu_patients&#39;,
+       &#39;icu_patients_per_million&#39;, &#39;hosp_patients&#39;,
+       &#39;hosp_patients_per_million&#39;, &#39;weekly_icu_admissions&#39;,
+       &#39;weekly_icu_admissions_per_million&#39;, &#39;weekly_hosp_admissions&#39;,
+       &#39;weekly_hosp_admissions_per_million&#39;, &#39;total_tests&#39;, &#39;new_tests&#39;,
+       &#39;total_tests_per_thousand&#39;, &#39;new_tests_per_thousand&#39;,
+       &#39;new_tests_smoothed&#39;, &#39;new_tests_smoothed_per_thousand&#39;,
+       &#39;positive_rate&#39;, &#39;tests_per_case&#39;, &#39;tests_units&#39;, &#39;total_vaccinations&#39;,
+       &#39;people_vaccinated&#39;, &#39;people_fully_vaccinated&#39;, &#39;total_boosters&#39;,
+       &#39;new_vaccinations&#39;, &#39;new_vaccinations_smoothed&#39;,
+       &#39;total_vaccinations_per_hundred&#39;, &#39;people_vaccinated_per_hundred&#39;,
+       &#39;people_fully_vaccinated_per_hundred&#39;, &#39;total_boosters_per_hundred&#39;,
+       &#39;new_vaccinations_smoothed_per_million&#39;,
+       &#39;new_people_vaccinated_smoothed&#39;,
+       &#39;new_people_vaccinated_smoothed_per_hundred&#39;, &#39;stringency_index&#39;,
+       &#39;population&#39;, &#39;population_density&#39;, &#39;median_age&#39;, &#39;aged_65_older&#39;,
+       &#39;aged_70_older&#39;, &#39;gdp_per_capita&#39;, &#39;extreme_poverty&#39;,
+       &#39;cardiovasc_death_rate&#39;, &#39;diabetes_prevalence&#39;, &#39;female_smokers&#39;,
+       &#39;male_smokers&#39;, &#39;handwashing_facilities&#39;, &#39;hospital_beds_per_thousand&#39;,
+       &#39;life_expectancy&#39;, &#39;human_development_index&#39;,
+       &#39;excess_mortality_cumulative_absolute&#39;, &#39;excess_mortality_cumulative&#39;,
+       &#39;excess_mortality&#39;, &#39;excess_mortality_cumulative_per_million&#39;],
+      dtype=&#39;object&#39;)
+</pre></div>
 </div>
 </div>
 </div>
-<p>This is a large dataset having thousands of rows and multiple columns. First, lets check what all information we have in this dataset i.e.&nbsp;what all columns are there. This can be achived by <code>columns</code> attribute of the dataframe. Please refer to the Our World in Data website for more information about the contents of this dataset.</p>
-<div class="cell" data-execution_count="219">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df_India.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="219">
-<pre><code>Index(['iso_code', 'continent', 'location', 'date', 'total_cases', 'new_cases',
-       'new_cases_smoothed', 'total_deaths', 'new_deaths',
-       'new_deaths_smoothed', 'total_cases_per_million',
-       'new_cases_per_million', 'new_cases_smoothed_per_million',
-       'total_deaths_per_million', 'new_deaths_per_million',
-       'new_deaths_smoothed_per_million', 'reproduction_rate', 'icu_patients',
-       'icu_patients_per_million', 'hosp_patients',
-       'hosp_patients_per_million', 'weekly_icu_admissions',
-       'weekly_icu_admissions_per_million', 'weekly_hosp_admissions',
-       'weekly_hosp_admissions_per_million', 'total_tests', 'new_tests',
-       'total_tests_per_thousand', 'new_tests_per_thousand',
-       'new_tests_smoothed', 'new_tests_smoothed_per_thousand',
-       'positive_rate', 'tests_per_case', 'tests_units', 'total_vaccinations',
-       'people_vaccinated', 'people_fully_vaccinated', 'total_boosters',
-       'new_vaccinations', 'new_vaccinations_smoothed',
-       'total_vaccinations_per_hundred', 'people_vaccinated_per_hundred',
-       'people_fully_vaccinated_per_hundred', 'total_boosters_per_hundred',
-       'new_vaccinations_smoothed_per_million',
-       'new_people_vaccinated_smoothed',
-       'new_people_vaccinated_smoothed_per_hundred', 'stringency_index',
-       'population', 'population_density', 'median_age', 'aged_65_older',
-       'aged_70_older', 'gdp_per_capita', 'extreme_poverty',
-       'cardiovasc_death_rate', 'diabetes_prevalence', 'female_smokers',
-       'male_smokers', 'handwashing_facilities', 'hospital_beds_per_thousand',
-       'life_expectancy', 'human_development_index',
-       'excess_mortality_cumulative_absolute', 'excess_mortality_cumulative',
-       'excess_mortality', 'excess_mortality_cumulative_per_million'],
-      dtype='object')</code></pre>
+<p>Next, we need to ask question(s) that we would like to be addressed through the analysis of this data. One such question could be – which are the top 10 countries with the highest number of total Covid19 cases? Given our dataset, we need to breakdown this problem into different steps. First get all the rows with the most current date in the date column. For this example we’ll retain only the location and total_cases columns although we can certain retain the entire dataset as well. An important point to note here is that that the location column need not have only the names of countries; there are certain groups name that are present as well, which we need to filter out. To filter these non-country location we need to prepare a list of all such group names (viz. World, Asia, etc). This list would then be passed to the <code class="docutils literal notranslate"><span class="pre">isin</span></code> function to make the required selection from the original dataframe. Next, using the <code class="docutils literal notranslate"><span class="pre">nlargest</span></code> function we can get the top <em>n</em> values for the total_cases column. The total_cases are formated to show the values with commas.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">top_10</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;2022-09-06&quot;</span><span class="p">][[</span><span class="s2">&quot;location&quot;</span><span class="p">,</span><span class="s2">&quot;total_cases&quot;</span><span class="p">]]</span>
+<span class="n">groups_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;World&quot;</span><span class="p">,</span><span class="s2">&quot;High income&quot;</span><span class="p">,</span><span class="s2">&quot;Upper middle income&quot;</span><span class="p">,</span> <span class="s2">&quot;Europe&quot;</span><span class="p">,</span> <span class="s2">&quot;Asia&quot;</span><span class="p">,</span> <span class="s2">&quot;European Union&quot;</span><span class="p">,</span> \
+               <span class="s2">&quot;Africa&quot;</span><span class="p">,</span> <span class="s2">&quot;Lower middle income&quot;</span><span class="p">,</span> <span class="s2">&quot;North America&quot;</span><span class="p">,</span> <span class="s2">&quot;South America&quot;</span><span class="p">]</span>
+<span class="n">top_10</span> <span class="o">=</span> <span class="n">top_10</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">top_10</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">groups_list</span><span class="p">)]</span> <span class="c1"># note the ~ operator</span>
+<span class="n">top_10</span> <span class="o">=</span> <span class="n">top_10</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="s2">&quot;total_cases&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">top_10</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s2">&quot;total_cases&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{:,.0f}</span><span class="s2">&quot;</span><span class="p">})</span>
+</pre></div>
 </div>
 </div>
-<p>Next, we need to ask question(s) that we would like to be addressed through the analysis of this data. One such question could be – which are the top 10 countries with the highest number of total Covid19 cases? Given our dataset, we need to breakdown this problem into different steps. First get all the rows with the most current date in the date column. For this example we’ll retain only the location and total_cases columns although we can certain retain the entire dataset as well. An important point to note here is that that the location column need not have only the names of countries; there are certain groups name that are present as well, which we need to filter out. To filter these non-country location we need to prepare a list of all such group names (viz.&nbsp;World, Asia, etc). This list would then be passed to the <code>isin</code> function to make the required selection from the original dataframe. Next, using the <code>nlargest</code> function we can get the top <em>n</em> values for the total_cases column. The total_cases are formated to show the values with commas.</p>
-<div class="cell" data-execution_count="231">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>top_10 <span class="op">=</span> df1[df1[<span class="st">"date"</span>]<span class="op">==</span><span class="st">"2022-09-06"</span>][[<span class="st">"location"</span>,<span class="st">"total_cases"</span>]]</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>groups_list <span class="op">=</span> [<span class="st">"World"</span>,<span class="st">"High income"</span>,<span class="st">"Upper middle income"</span>, <span class="st">"Europe"</span>, <span class="st">"Asia"</span>, <span class="st">"European Union"</span>, <span class="op">\</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">"Africa"</span>, <span class="st">"Lower middle income"</span>, <span class="st">"North America"</span>, <span class="st">"South America"</span>]</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>top_10 <span class="op">=</span> top_10.loc[<span class="op">~</span>top_10[<span class="st">"location"</span>].isin(groups_list)] <span class="co"># note the ~ operator</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>top_10 <span class="op">=</span> top_10.nlargest(<span class="dv">10</span>,<span class="st">"total_cases"</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>top_10.style.<span class="bu">format</span>({<span class="st">"total_cases"</span>: <span class="st">"{:,.0f}"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="231">
-
-<style type="text/css">
+<div class="cell_output docutils container">
+<div class="output text_html"><style type="text/css">
 </style>
-<table id="T_f57b6">
+<table id="T_ff0fe">
   <thead>
     <tr>
-      <th class="blank level0">&nbsp;</th>
-      <th id="T_f57b6_level0_col0" class="col_heading level0 col0">location</th>
-      <th id="T_f57b6_level0_col1" class="col_heading level0 col1">total_cases</th>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_ff0fe_level0_col0" class="col_heading level0 col0" >location</th>
+      <th id="T_ff0fe_level0_col1" class="col_heading level0 col1" >total_cases</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th id="T_f57b6_level0_row0" class="row_heading level0 row0">0</th>
-      <td id="T_f57b6_row0_col0" class="data row0 col0">United States</td>
-      <td id="T_f57b6_row0_col1" class="data row0 col1">94,898,863</td>
+      <th id="T_ff0fe_level0_row0" class="row_heading level0 row0" >0</th>
+      <td id="T_ff0fe_row0_col0" class="data row0 col0" >United States</td>
+      <td id="T_ff0fe_row0_col1" class="data row0 col1" >94,898,863</td>
     </tr>
     <tr>
-      <th id="T_f57b6_level0_row1" class="row_heading level0 row1">1</th>
-      <td id="T_f57b6_row1_col0" class="data row1 col0">India</td>
-      <td id="T_f57b6_row1_col1" class="data row1 col1">44,469,661</td>
+      <th id="T_ff0fe_level0_row1" class="row_heading level0 row1" >1</th>
+      <td id="T_ff0fe_row1_col0" class="data row1 col0" >India</td>
+      <td id="T_ff0fe_row1_col1" class="data row1 col1" >44,469,661</td>
     </tr>
     <tr>
-      <th id="T_f57b6_level0_row2" class="row_heading level0 row2">2</th>
-      <td id="T_f57b6_row2_col0" class="data row2 col0">France</td>
-      <td id="T_f57b6_row2_col1" class="data row2 col1">34,685,277</td>
+      <th id="T_ff0fe_level0_row2" class="row_heading level0 row2" >2</th>
+      <td id="T_ff0fe_row2_col0" class="data row2 col0" >France</td>
+      <td id="T_ff0fe_row2_col1" class="data row2 col1" >34,685,277</td>
     </tr>
     <tr>
-      <th id="T_f57b6_level0_row3" class="row_heading level0 row3">3</th>
-      <td id="T_f57b6_row3_col0" class="data row3 col0">Brazil</td>
-      <td id="T_f57b6_row3_col1" class="data row3 col1">34,477,539</td>
+      <th id="T_ff0fe_level0_row3" class="row_heading level0 row3" >3</th>
+      <td id="T_ff0fe_row3_col0" class="data row3 col0" >Brazil</td>
+      <td id="T_ff0fe_row3_col1" class="data row3 col1" >34,477,539</td>
     </tr>
     <tr>
-      <th id="T_f57b6_level0_row4" class="row_heading level0 row4">4</th>
-      <td id="T_f57b6_row4_col0" class="data row4 col0">Germany</td>
-      <td id="T_f57b6_row4_col1" class="data row4 col1">32,344,032</td>
+      <th id="T_ff0fe_level0_row4" class="row_heading level0 row4" >4</th>
+      <td id="T_ff0fe_row4_col0" class="data row4 col0" >Germany</td>
+      <td id="T_ff0fe_row4_col1" class="data row4 col1" >32,344,032</td>
     </tr>
     <tr>
-      <th id="T_f57b6_level0_row5" class="row_heading level0 row5">5</th>
-      <td id="T_f57b6_row5_col0" class="data row5 col0">South Korea</td>
-      <td id="T_f57b6_row5_col1" class="data row5 col1">23,791,961</td>
+      <th id="T_ff0fe_level0_row5" class="row_heading level0 row5" >5</th>
+      <td id="T_ff0fe_row5_col0" class="data row5 col0" >South Korea</td>
+      <td id="T_ff0fe_row5_col1" class="data row5 col1" >23,791,961</td>
     </tr>
     <tr>
-      <th id="T_f57b6_level0_row6" class="row_heading level0 row6">6</th>
-      <td id="T_f57b6_row6_col0" class="data row6 col0">United Kingdom</td>
-      <td id="T_f57b6_row6_col1" class="data row6 col1">23,521,792</td>
+      <th id="T_ff0fe_level0_row6" class="row_heading level0 row6" >6</th>
+      <td id="T_ff0fe_row6_col0" class="data row6 col0" >United Kingdom</td>
+      <td id="T_ff0fe_row6_col1" class="data row6 col1" >23,521,792</td>
     </tr>
     <tr>
-      <th id="T_f57b6_level0_row7" class="row_heading level0 row7">7</th>
-      <td id="T_f57b6_row7_col0" class="data row7 col0">Italy</td>
-      <td id="T_f57b6_row7_col1" class="data row7 col1">21,969,725</td>
+      <th id="T_ff0fe_level0_row7" class="row_heading level0 row7" >7</th>
+      <td id="T_ff0fe_row7_col0" class="data row7 col0" >Italy</td>
+      <td id="T_ff0fe_row7_col1" class="data row7 col1" >21,969,725</td>
     </tr>
     <tr>
-      <th id="T_f57b6_level0_row8" class="row_heading level0 row8">8</th>
-      <td id="T_f57b6_row8_col0" class="data row8 col0">Japan</td>
-      <td id="T_f57b6_row8_col1" class="data row8 col1">19,640,667</td>
+      <th id="T_ff0fe_level0_row8" class="row_heading level0 row8" >8</th>
+      <td id="T_ff0fe_row8_col0" class="data row8 col0" >Japan</td>
+      <td id="T_ff0fe_row8_col1" class="data row8 col1" >19,640,667</td>
     </tr>
     <tr>
-      <th id="T_f57b6_level0_row9" class="row_heading level0 row9">9</th>
-      <td id="T_f57b6_row9_col0" class="data row9 col0">Russia</td>
-      <td id="T_f57b6_row9_col1" class="data row9 col1">19,521,190</td>
+      <th id="T_ff0fe_level0_row9" class="row_heading level0 row9" >9</th>
+      <td id="T_ff0fe_row9_col0" class="data row9 col0" >Russia</td>
+      <td id="T_ff0fe_row9_col1" class="data row9 col1" >19,521,190</td>
     </tr>
   </tbody>
 </table>
+</div></div>
+</div>
+<p>To get countries with the maximum number of cases per continent, we can use the <code class="docutils literal notranslate"><span class="pre">groupby</span></code> function to group the dataframe by continent column. Then using the <code class="docutils literal notranslate"><span class="pre">idmax</span></code> function the indices of the highest value for the total_cases column is retrieved. To get the final list, use these indices to get rows by location i.e. with the <code class="docutils literal notranslate"><span class="pre">loc</span></code> attribute of the dataframe.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">top_10_cont</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[[</span><span class="s2">&quot;continent&quot;</span><span class="p">,</span><span class="s2">&quot;location&quot;</span><span class="p">,</span><span class="s2">&quot;total_cases&quot;</span><span class="p">]]</span>
+<span class="n">top_10_cont</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">top_10_cont</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;continent&quot;</span><span class="p">)[</span><span class="s2">&quot;total_cases&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
-<p>To get countries with the maximum number of cases per continent, we can use the <code>groupby</code> function to group the dataframe by continent column. Then using the <code>idmax</code> function the indices of the highest value for the total_cases column is retrieved. To get the final list, use these indices to get rows by location i.e.&nbsp;with the <code>loc</code> attribute of the dataframe.</p>
-<div class="cell" data-execution_count="95">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>top_10_cont <span class="op">=</span> df1[[<span class="st">"continent"</span>,<span class="st">"location"</span>,<span class="st">"total_cases"</span>]]</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>top_10_cont.loc[top_10_cont.groupby(<span class="st">"continent"</span>)[<span class="st">"total_cases"</span>].idxmax()].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="95">
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-<table class="dataframe table table-sm table-striped">
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
   <thead>
-    <tr>
+    <tr style="text-align: right;">
       <th></th>
       <th>continent</th>
       <th>location</th>
@@ -554,110 +680,147 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </tr>
   </tbody>
 </table>
-</div>
-</div>
+</div></div></div>
 </div>
 <p>Bar plot of top 10 countries.</p>
-<div class="cell" data-execution_count="98">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ax.barh(top_10[<span class="st">"location"</span>],top_10[<span class="st">"total_cases"</span>], color<span class="op">=</span><span class="st">"lightblue"</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>ax.spines[[<span class="st">"top"</span>,<span class="st">"right"</span>,<span class="st">"left"</span>]].set_visible(<span class="va">False</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ax.yaxis.set_ticks_position(<span class="st">'none'</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>a<span class="op">=</span>ax.get_yticklabels()</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="st">'on'</span>,which<span class="op">=</span><span class="st">'major'</span>,axis<span class="op">=</span><span class="st">'x'</span>)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>ax.invert_yaxis()</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="Covid19_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">top_10</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">],</span><span class="n">top_10</span><span class="p">[</span><span class="s2">&quot;total_cases&quot;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;lightblue&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[[</span><span class="s2">&quot;top&quot;</span><span class="p">,</span><span class="s2">&quot;right&quot;</span><span class="p">,</span><span class="s2">&quot;left&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="s1">&#39;on&#39;</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
-<section id="changing-axis-scale" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="changing-axis-scale"><span class="header-section-number">1.1</span> Changing axis scale</h2>
-<p>On a linear scale there is a fixed increment at regular intervals. The positioning of the tick marks on the axis for a graph with linear scale is calculated by addition. Whereas, on a log scale the ticks on the axis are marked using multiplication factor. This makes log scale graphs less intuitive to understand the underlying information and therefore it requires some training to parse graphs with log scale. Let’s plot some data to get a clarity on this distinction between these scales. For this example, we’ll plot exponential curve i.e.&nbsp;the values would be like 1,2,4,8,16,32…etc. The graphs below shows this trend plotted with y-axis having a linear (left) and a log (right) scale. Notice how different the two curves look! The log scale graph is useful in interpreting the pattern of the growth such that an exponential growth on a log scale would result in a straight line.</p>
-<div class="cell" data-execution_count="99">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>N<span class="op">=</span><span class="dv">1</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">11</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> []</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> a <span class="kw">in</span> x:</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> N<span class="op">*</span><span class="dv">2</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    y.append(N)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>fig, (ax1,ax2) <span class="op">=</span> plt.subplots(nrows<span class="op">=</span><span class="dv">1</span>, ncols<span class="op">=</span><span class="dv">2</span>,figsize<span class="op">=</span>(<span class="dv">9</span>,<span class="dv">3</span>))</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>ax1.plot(x,y)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>ax2.plot(x,y)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>ax2.set_yscale(<span class="st">'log'</span>)</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>ax1.set_title(<span class="st">"Linear Scale"</span>)</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>ax2.set_title(<span class="st">"Log Scale"</span>)</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="Covid19_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
+<div class="cell_output docutils container">
+<img alt="_images/d4fe17ff6db75532d117009f50bf92294fa744ab58227e160e89f255885aa613.png" src="_images/d4fe17ff6db75532d117009f50bf92294fa744ab58227e160e89f255885aa613.png" />
+</div>
+</div>
+<section id="changing-axis-scale">
+<h2>Changing axis scale<a class="headerlink" href="#changing-axis-scale" title="Link to this heading">#</a></h2>
+<p>On a linear scale there is a fixed increment at regular intervals. The positioning of the tick marks on the axis for a graph with linear scale is calculated by addition. Whereas, on a log scale the ticks on the axis are marked using multiplication factor. This makes log scale graphs less intuitive to understand the underlying information and therefore it requires some training to parse graphs with log scale. Let’s plot some data to get a clarity on this distinction between these scales. For this example, we’ll plot exponential curve i.e. the values would be like 1,2,4,8,16,32…etc. The graphs below shows this trend plotted with y-axis having a linear (left) and a log (right) scale. Notice how different the two curves look! The log scale graph is useful in interpreting the pattern of the growth such that an exponential growth on a log scale would result in a straight line.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">N</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">x</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">N</span><span class="o">*</span><span class="mi">2</span>
+    <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span><span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Linear Scale&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Log Scale&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/1109833220dbd18ddde0add64b01cd1b708394a8b5045588d353292c14f799fd.png" src="_images/1109833220dbd18ddde0add64b01cd1b708394a8b5045588d353292c14f799fd.png" />
 </div>
 </div>
 <p>Let’s plot the emergence of new cases on linear and log scales.</p>
-<div class="cell" data-execution_count="118">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fig,ax<span class="op">=</span>plt.subplots(<span class="dv">1</span>,<span class="dv">2</span>,figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">3</span>))</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"India"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"United States"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"France"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].legend([<span class="st">"India"</span>,<span class="st">"United States"</span>, <span class="st">"France"</span>])</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_ylabel(<span class="st">"Total Cases"</span>)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_title(<span class="st">"Linear"</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"India"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">1</span>])</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"United States"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">1</span>])</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"France"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax[<span class="dv">1</span>])</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">"India"</span>,<span class="st">"United States"</span>, <span class="st">"France"</span>])</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].legend([<span class="st">"India"</span>,<span class="st">"United States"</span>, <span class="st">"France"</span>])</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_ylabel(<span class="st">"Total Cases"</span>)</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_yscale(<span class="st">"log"</span>)</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_title(<span class="st">"Log"</span>)</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="Covid19_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;India&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_cases&quot;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;United States&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_cases&quot;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;France&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_cases&quot;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;India&quot;</span><span class="p">,</span><span class="s2">&quot;United States&quot;</span><span class="p">,</span> <span class="s2">&quot;France&quot;</span><span class="p">])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Total Cases&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Linear&quot;</span><span class="p">)</span>
+
+<span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;India&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_cases&quot;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;United States&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_cases&quot;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;France&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_cases&quot;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;India&quot;</span><span class="p">,</span><span class="s2">&quot;United States&quot;</span><span class="p">,</span> <span class="s2">&quot;France&quot;</span><span class="p">])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;India&quot;</span><span class="p">,</span><span class="s2">&quot;United States&quot;</span><span class="p">,</span> <span class="s2">&quot;France&quot;</span><span class="p">])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Total Cases&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Log&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/271811db70aa9c3ac7341d5eca508952b559a77ede8f650eece550458f876736.png" src="_images/271811db70aa9c3ac7341d5eca508952b559a77ede8f650eece550458f876736.png" />
 </div>
 </div>
 </section>
-<section id="function-to-plot-total-cases" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="function-to-plot-total-cases"><span class="header-section-number">1.2</span> Function to plot total cases</h2>
-<p>We can write a function to plot the time series of total cases for any location(s). This function would be define with <code>*args</code> to hold a list of locations that need to be plotted.</p>
-<div class="cell" data-execution_count="120">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_country(<span class="op">*</span>args):</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    fig,ax<span class="op">=</span>plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">3</span>))</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> c <span class="kw">in</span> args:</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        df1[df1[<span class="st">"location"</span>]<span class="op">==</span>c].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"total_cases"</span>,ax<span class="op">=</span>ax)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    plt.legend(args)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>plot_country(<span class="st">"India"</span>,<span class="st">"United States"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="Covid19_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
+<section id="function-to-plot-total-cases">
+<h2>Function to plot total cases<a class="headerlink" href="#function-to-plot-total-cases" title="Link to this heading">#</a></h2>
+<p>We can write a function to plot the time series of total cases for any location(s). This function would be define with <code class="docutils literal notranslate"><span class="pre">*args</span></code> to hold a list of locations that need to be plotted.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_country</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">fig</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">]</span><span class="o">==</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_cases&quot;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">plot_country</span><span class="p">(</span><span class="s2">&quot;India&quot;</span><span class="p">,</span><span class="s2">&quot;United States&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/617600416cdb38909a92c77b102569a2ab272fda63ef334eb7d7957c4e08172a.png" src="_images/617600416cdb38909a92c77b102569a2ab272fda63ef334eb7d7957c4e08172a.png" />
 </div>
 </div>
 <p>The visualize emergence of new cases over time, we need to plot the new_cases for a given location. This kind of plot would give us an idea about the “waves” of the pandemic.</p>
-<div class="cell" data-execution_count="126">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fig,ax<span class="op">=</span>plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">3</span>))</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"India"</span>].plot(x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"new_cases"</span>,ax<span class="op">=</span>ax)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Number of cases"</span>)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">"India"</span>])</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="Covid19_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;India&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;new_cases&quot;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Number of cases&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;India&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
-<p>The analyze a particular country in detail, a subset of the dataframe can be created having data for only that country. In the example below we’ll make a dataframe for location “India” and then we’ll find out number of monthly cases in a specific year. For this we’ll first need to change the datatype of the “date” column to pandas datatime datatype. The datatypes for all the columns can be checked by used the <code>dtypes</code> attribute for the dataframe.</p>
-<div class="cell" data-execution_count="234">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df_India <span class="op">=</span> df1[df1[<span class="st">"location"</span>]<span class="op">==</span><span class="st">"India"</span>]</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df_India.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="234">
+<div class="cell_output docutils container">
+<img alt="_images/ed41eac98547d0e7c8a812ff50f3280835a59414f32fa5a70e0a6194dbd092ce.png" src="_images/ed41eac98547d0e7c8a812ff50f3280835a59414f32fa5a70e0a6194dbd092ce.png" />
+</div>
+</div>
+</section>
+<section id="the-datetime-object">
+<h2>The datetime object<a class="headerlink" href="#the-datetime-object" title="Link to this heading">#</a></h2>
+<p>The analyze a particular country in detail, a subset of the dataframe can be created having data for only that country. In the example below we’ll make a dataframe for location “India” and then we’ll find out number of monthly cases in a specific year. For this we’ll first need to change the datatype of the “date” column to pandas <code class="docutils literal notranslate"><span class="pre">datetime64[ns]</span></code> datatype. The datatypes for all the columns can be checked by used the <code class="docutils literal notranslate"><span class="pre">dtypes</span></code> attribute for the dataframe.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_India</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s2">&quot;location&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;India&quot;</span><span class="p">]</span>
+<span class="n">df_India</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-<table class="dataframe table table-sm table-striped">
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
   <thead>
-    <tr>
+    <tr style="text-align: right;">
       <th></th>
       <th>iso_code</th>
       <th>continent</th>
@@ -806,23 +969,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </tbody>
 </table>
 <p>5 rows × 67 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The data type for the date column is&quot;</span><span class="p">,</span> <span class="n">df_India</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="n">df_India</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df_India</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The data type for the date column is&quot;</span><span class="p">,</span> <span class="n">df_India</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The data type for the date column is object
+The data type for the date column is datetime64[ns]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\bioinfo guru\AppData\Local\Temp\ipykernel_68036\571516330.py:2: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_India[&#39;date&#39;] = pd.to_datetime(df_India[&#39;date&#39;])
+</pre></div>
 </div>
 </div>
 </div>
-<div class="cell" data-scrolled="true" data-execution_count="235">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The data type for the date column is"</span>, df_India[<span class="st">'date'</span>].dtype)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df_India[<span class="st">'date'</span>] <span class="op">=</span> pd.to_datetime(df_India[<span class="st">'date'</span>])</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"The data type for the date column is"</span>, df_India[<span class="st">'date'</span>].dtype)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>The data type for the date column is object
-The data type for the date column is datetime64[ns]</code></pre>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_India_2022</span> <span class="o">=</span> <span class="n">df_India</span><span class="p">[(</span><span class="n">df_India</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="s1">&#39;2022-01-01&#39;</span><span class="p">)]</span>
+<span class="n">df_India_2022</span><span class="o">.</span><span class="n">dtypes</span>
+</pre></div>
 </div>
 </div>
-<div class="cell" data-execution_count="236">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df_India_2022 <span class="op">=</span> df_India[(df_India[<span class="st">"date"</span>] <span class="op">&gt;=</span> <span class="st">'2022-01-01'</span>)]</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df_India_2022.dtypes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="236">
-<pre><code>iso_code                                           object
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iso_code                                           object
 continent                                          object
 location                                           object
 date                                       datetime64[ns]
@@ -833,239 +1013,174 @@ excess_mortality_cumulative_absolute              float64
 excess_mortality_cumulative                       float64
 excess_mortality                                  float64
 excess_mortality_cumulative_per_million           float64
-Length: 67, dtype: object</code></pre>
+Length: 67, dtype: object
+</pre></div>
 </div>
 </div>
-<div class="cell" data-execution_count="237">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df_months <span class="op">=</span> df_India_2022.groupby(df_India_2022[<span class="st">'date'</span>].dt.strftime(<span class="st">'%B'</span>))[<span class="st">"new_cases"</span>].<span class="bu">sum</span>().to_frame().reset_index()</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>df_months</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="237">
-
-<div>
-
-<table class="dataframe table table-sm table-striped">
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_months</span> <span class="o">=</span> <span class="n">df_India_2022</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">df_India_2022</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%B&#39;</span><span class="p">))[</span><span class="s2">&quot;new_cases&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">df_months</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s2">&quot;new_cases&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{:,.0f}</span><span class="s2">&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style type="text/css">
+</style>
+<table id="T_eadef">
   <thead>
     <tr>
-      <th></th>
-      <th>date</th>
-      <th>new_cases</th>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_eadef_level0_col0" class="col_heading level0 col0" >date</th>
+      <th id="T_eadef_level0_col1" class="col_heading level0 col1" >new_cases</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>April</td>
-      <td>53413.0</td>
+      <th id="T_eadef_level0_row0" class="row_heading level0 row0" >0</th>
+      <td id="T_eadef_row0_col0" class="data row0 col0" >April</td>
+      <td id="T_eadef_row0_col1" class="data row0 col1" >53,413</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>August</td>
-      <td>400064.0</td>
+      <th id="T_eadef_level0_row1" class="row_heading level0 row1" >1</th>
+      <td id="T_eadef_row1_col0" class="data row1 col0" >August</td>
+      <td id="T_eadef_row1_col1" class="data row1 col1" >400,064</td>
     </tr>
     <tr>
-      <th>2</th>
-      <td>February</td>
-      <td>1461546.0</td>
+      <th id="T_eadef_level0_row2" class="row_heading level0 row2" >2</th>
+      <td id="T_eadef_row2_col0" class="data row2 col0" >February</td>
+      <td id="T_eadef_row2_col1" class="data row2 col1" >1,461,546</td>
     </tr>
     <tr>
-      <th>3</th>
-      <td>January</td>
-      <td>6607920.0</td>
+      <th id="T_eadef_level0_row3" class="row_heading level0 row3" >3</th>
+      <td id="T_eadef_row3_col0" class="data row3 col0" >January</td>
+      <td id="T_eadef_row3_col1" class="data row3 col1" >6,607,920</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>July</td>
-      <td>567041.0</td>
+      <th id="T_eadef_level0_row4" class="row_heading level0 row4" >4</th>
+      <td id="T_eadef_row4_col0" class="data row4 col0" >July</td>
+      <td id="T_eadef_row4_col1" class="data row4 col1" >567,041</td>
     </tr>
     <tr>
-      <th>5</th>
-      <td>June</td>
-      <td>308402.0</td>
+      <th id="T_eadef_level0_row5" class="row_heading level0 row5" >5</th>
+      <td id="T_eadef_row5_col0" class="data row5 col0" >June</td>
+      <td id="T_eadef_row5_col1" class="data row5 col1" >308,402</td>
     </tr>
     <tr>
-      <th>6</th>
-      <td>March</td>
-      <td>94730.0</td>
+      <th id="T_eadef_level0_row6" class="row_heading level0 row6" >6</th>
+      <td id="T_eadef_row6_col0" class="data row6 col0" >March</td>
+      <td id="T_eadef_row6_col1" class="data row6 col1" >94,730</td>
     </tr>
     <tr>
-      <th>7</th>
-      <td>May</td>
-      <td>81644.0</td>
+      <th id="T_eadef_level0_row7" class="row_heading level0 row7" >7</th>
+      <td id="T_eadef_row7_col0" class="data row7 col0" >May</td>
+      <td id="T_eadef_row7_col1" class="data row7 col1" >81,644</td>
     </tr>
     <tr>
-      <th>8</th>
-      <td>September</td>
-      <td>33322.0</td>
+      <th id="T_eadef_level0_row8" class="row_heading level0 row8" >8</th>
+      <td id="T_eadef_row8_col0" class="data row8 col0" >September</td>
+      <td id="T_eadef_row8_col1" class="data row8 col1" >33,322</td>
     </tr>
   </tbody>
 </table>
+</div></div>
 </div>
-</div>
-</div>
+</section>
+<section id="categorical-variables">
+<h2>Categorical variables<a class="headerlink" href="#categorical-variables" title="Link to this heading">#</a></h2>
 <p>To sort the dataframe by month, we need to first change the data type of the months column to catagorical since the default data type of this column (object) would lead to sorting by alphabetical order. We would like to sort this column by the order that we see in a calender (which, of course, is not alphabetical).</p>
-<div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df_months.sort_values(by<span class="op">=</span><span class="st">"date"</span>,inplace<span class="op">=</span><span class="va">True</span>, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>df_months_1 <span class="op">=</span> df_months.style.set_caption(<span class="st">"Date as object data type"</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>display(df_months_1)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>months <span class="op">=</span> [<span class="st">"January"</span>, <span class="st">"February"</span>, <span class="st">"March"</span>, <span class="st">"April"</span>, <span class="st">"May"</span>, <span class="st">"June"</span>, </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>          <span class="st">"July"</span>, <span class="st">"August"</span>, <span class="st">"September"</span>, <span class="st">"October"</span>, <span class="st">"November"</span>, <span class="st">"December"</span>]</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>df_months[<span class="st">'date'</span>] <span class="op">=</span> pd.Categorical(df_months[<span class="st">'date'</span>], categories<span class="op">=</span>months, ordered<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>df_months.sort_values(by<span class="op">=</span><span class="st">"date"</span>,inplace<span class="op">=</span><span class="va">True</span>, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>df_months_2 <span class="op">=</span> df_months.style.set_caption(<span class="st">"Date as catagorical data type"</span>)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>display(df_months_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell quarto-layout-panel" data-execution_count="238">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
 
-<style type="text/css">
+<span class="n">df_months</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_months_1</span> <span class="o">=</span> <span class="n">df_months</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="s2">&quot;Date as object data type&quot;</span><span class="p">)</span>
+<span class="n">df_months_1</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s2">&quot;new_cases&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{:,.0f}</span><span class="s2">&quot;</span><span class="p">})</span>
+<span class="n">output1</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">output1</span><span class="p">:</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">df_months_1</span><span class="p">)</span>
+
+<span class="n">months</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;January&quot;</span><span class="p">,</span> <span class="s2">&quot;February&quot;</span><span class="p">,</span> <span class="s2">&quot;March&quot;</span><span class="p">,</span> <span class="s2">&quot;April&quot;</span><span class="p">,</span> <span class="s2">&quot;May&quot;</span><span class="p">,</span> <span class="s2">&quot;June&quot;</span><span class="p">,</span> 
+          <span class="s2">&quot;July&quot;</span><span class="p">,</span> <span class="s2">&quot;August&quot;</span><span class="p">,</span> <span class="s2">&quot;September&quot;</span><span class="p">,</span> <span class="s2">&quot;October&quot;</span><span class="p">,</span> <span class="s2">&quot;November&quot;</span><span class="p">,</span> <span class="s2">&quot;December&quot;</span><span class="p">]</span>
+<span class="n">df_months</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">df_months</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">categories</span><span class="o">=</span><span class="n">months</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_months</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_months_2</span> <span class="o">=</span> <span class="n">df_months</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="s2">&quot;Date as catagorical data type&quot;</span><span class="p">)</span>
+<span class="n">df_months_2</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s2">&quot;new_cases&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{:,.0f}</span><span class="s2">&quot;</span><span class="p">})</span>
+<span class="n">output2</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">output2</span><span class="p">:</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">df_months_2</span><span class="p">)</span>
+
+<span class="n">two_columns</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="n">output1</span><span class="p">,</span> <span class="n">output2</span><span class="p">])</span>
+<span class="n">display</span><span class="p">(</span><span class="n">two_columns</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "9f1c7d7a355a4fe9916d72c13e23cb86"}</script></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">df_months</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="s2">&quot;January&quot;</span><span class="p">,</span> <span class="s2">&quot;February&quot;</span><span class="p">,</span> <span class="s2">&quot;March&quot;</span><span class="p">,</span> <span class="s2">&quot;April&quot;</span><span class="p">,</span> <span class="s2">&quot;May&quot;</span><span class="p">,</span> <span class="s2">&quot;June&quot;</span><span class="p">,</span> \
+          <span class="s2">&quot;July&quot;</span><span class="p">,</span> <span class="s2">&quot;August&quot;</span><span class="p">,</span> <span class="s2">&quot;September&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Number of cases&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/ae55d28b37a77486edd0f0dd44f452ca96e658cc90db1b581d637dce9981f547.png" src="_images/ae55d28b37a77486edd0f0dd44f452ca96e658cc90db1b581d637dce9981f547.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_India_2022</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_India_2022</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%B&#39;</span><span class="p">)</span>
+<span class="n">months</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;January&quot;</span><span class="p">,</span> <span class="s2">&quot;February&quot;</span><span class="p">,</span> <span class="s2">&quot;March&quot;</span><span class="p">,</span> <span class="s2">&quot;April&quot;</span><span class="p">,</span> <span class="s2">&quot;May&quot;</span><span class="p">,</span> <span class="s2">&quot;June&quot;</span><span class="p">,</span><span class="s2">&quot;July&quot;</span><span class="p">,</span> <span class="s2">&quot;August&quot;</span><span class="p">,</span> <span class="s2">&quot;September&quot;</span><span class="p">]</span>
+<span class="n">df_India_2022</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">df_India_2022</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">categories</span><span class="o">=</span><span class="n">months</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_India_2022</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_India_2022</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\bioinfo guru\AppData\Local\Temp\ipykernel_68036\3114432298.py:1: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_India_2022[&quot;date&quot;] = df_India_2022[&quot;date&quot;].dt.strftime(&#39;%B&#39;)
+C:\Users\bioinfo guru\AppData\Local\Temp\ipykernel_68036\3114432298.py:3: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_India_2022[&#39;date&#39;] = pd.Categorical(df_India_2022[&#39;date&#39;], categories=months, ordered=True)
+C:\Users\bioinfo guru\AppData\Local\Temp\ipykernel_68036\3114432298.py:4: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_India_2022.sort_values(by=&quot;date&quot;,inplace=True, ignore_index=True)
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
 </style>
-<table id="T_90f3e">
-  <caption>Date as object data type</caption>
+<table border="1" class="dataframe">
   <thead>
-    <tr>
-      <th class="blank level0">&nbsp;</th>
-      <th id="T_90f3e_level0_col0" class="col_heading level0 col0">date</th>
-      <th id="T_90f3e_level0_col1" class="col_heading level0 col1">new_cases</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th id="T_90f3e_level0_row0" class="row_heading level0 row0">0</th>
-      <td id="T_90f3e_row0_col0" class="data row0 col0">April</td>
-      <td id="T_90f3e_row0_col1" class="data row0 col1">53413.000000</td>
-    </tr>
-    <tr>
-      <th id="T_90f3e_level0_row1" class="row_heading level0 row1">1</th>
-      <td id="T_90f3e_row1_col0" class="data row1 col0">August</td>
-      <td id="T_90f3e_row1_col1" class="data row1 col1">400064.000000</td>
-    </tr>
-    <tr>
-      <th id="T_90f3e_level0_row2" class="row_heading level0 row2">2</th>
-      <td id="T_90f3e_row2_col0" class="data row2 col0">February</td>
-      <td id="T_90f3e_row2_col1" class="data row2 col1">1461546.000000</td>
-    </tr>
-    <tr>
-      <th id="T_90f3e_level0_row3" class="row_heading level0 row3">3</th>
-      <td id="T_90f3e_row3_col0" class="data row3 col0">January</td>
-      <td id="T_90f3e_row3_col1" class="data row3 col1">6607920.000000</td>
-    </tr>
-    <tr>
-      <th id="T_90f3e_level0_row4" class="row_heading level0 row4">4</th>
-      <td id="T_90f3e_row4_col0" class="data row4 col0">July</td>
-      <td id="T_90f3e_row4_col1" class="data row4 col1">567041.000000</td>
-    </tr>
-    <tr>
-      <th id="T_90f3e_level0_row5" class="row_heading level0 row5">5</th>
-      <td id="T_90f3e_row5_col0" class="data row5 col0">June</td>
-      <td id="T_90f3e_row5_col1" class="data row5 col1">308402.000000</td>
-    </tr>
-    <tr>
-      <th id="T_90f3e_level0_row6" class="row_heading level0 row6">6</th>
-      <td id="T_90f3e_row6_col0" class="data row6 col0">March</td>
-      <td id="T_90f3e_row6_col1" class="data row6 col1">94730.000000</td>
-    </tr>
-    <tr>
-      <th id="T_90f3e_level0_row7" class="row_heading level0 row7">7</th>
-      <td id="T_90f3e_row7_col0" class="data row7 col0">May</td>
-      <td id="T_90f3e_row7_col1" class="data row7 col1">81644.000000</td>
-    </tr>
-    <tr>
-      <th id="T_90f3e_level0_row8" class="row_heading level0 row8">8</th>
-      <td id="T_90f3e_row8_col0" class="data row8 col0">September</td>
-      <td id="T_90f3e_row8_col1" class="data row8 col1">33322.000000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-<div class="cell-output cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-
-<style type="text/css">
-</style>
-<table id="T_8e932">
-  <caption>Date as catagorical data type</caption>
-  <thead>
-    <tr>
-      <th class="blank level0">&nbsp;</th>
-      <th id="T_8e932_level0_col0" class="col_heading level0 col0">date</th>
-      <th id="T_8e932_level0_col1" class="col_heading level0 col1">new_cases</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th id="T_8e932_level0_row0" class="row_heading level0 row0">0</th>
-      <td id="T_8e932_row0_col0" class="data row0 col0">January</td>
-      <td id="T_8e932_row0_col1" class="data row0 col1">6607920.000000</td>
-    </tr>
-    <tr>
-      <th id="T_8e932_level0_row1" class="row_heading level0 row1">1</th>
-      <td id="T_8e932_row1_col0" class="data row1 col0">February</td>
-      <td id="T_8e932_row1_col1" class="data row1 col1">1461546.000000</td>
-    </tr>
-    <tr>
-      <th id="T_8e932_level0_row2" class="row_heading level0 row2">2</th>
-      <td id="T_8e932_row2_col0" class="data row2 col0">March</td>
-      <td id="T_8e932_row2_col1" class="data row2 col1">94730.000000</td>
-    </tr>
-    <tr>
-      <th id="T_8e932_level0_row3" class="row_heading level0 row3">3</th>
-      <td id="T_8e932_row3_col0" class="data row3 col0">April</td>
-      <td id="T_8e932_row3_col1" class="data row3 col1">53413.000000</td>
-    </tr>
-    <tr>
-      <th id="T_8e932_level0_row4" class="row_heading level0 row4">4</th>
-      <td id="T_8e932_row4_col0" class="data row4 col0">May</td>
-      <td id="T_8e932_row4_col1" class="data row4 col1">81644.000000</td>
-    </tr>
-    <tr>
-      <th id="T_8e932_level0_row5" class="row_heading level0 row5">5</th>
-      <td id="T_8e932_row5_col0" class="data row5 col0">June</td>
-      <td id="T_8e932_row5_col1" class="data row5 col1">308402.000000</td>
-    </tr>
-    <tr>
-      <th id="T_8e932_level0_row6" class="row_heading level0 row6">6</th>
-      <td id="T_8e932_row6_col0" class="data row6 col0">July</td>
-      <td id="T_8e932_row6_col1" class="data row6 col1">567041.000000</td>
-    </tr>
-    <tr>
-      <th id="T_8e932_level0_row7" class="row_heading level0 row7">7</th>
-      <td id="T_8e932_row7_col0" class="data row7 col0">August</td>
-      <td id="T_8e932_row7_col1" class="data row7 col1">400064.000000</td>
-    </tr>
-    <tr>
-      <th id="T_8e932_level0_row8" class="row_heading level0 row8">8</th>
-      <td id="T_8e932_row8_col0" class="data row8 col0">September</td>
-      <td id="T_8e932_row8_col1" class="data row8 col1">33322.000000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="cell" data-execution_count="239">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fig,ax<span class="op">=</span>plt.subplots()</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>df_months.plot(kind<span class="op">=</span><span class="st">"bar"</span>,xlabel<span class="op">=</span><span class="st">"date"</span>, ax<span class="op">=</span>ax)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels([<span class="st">"January"</span>, <span class="st">"February"</span>, <span class="st">"March"</span>, <span class="st">"April"</span>, <span class="st">"May"</span>, <span class="st">"June"</span>, <span class="op">\</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>          <span class="st">"July"</span>, <span class="st">"August"</span>, <span class="st">"September"</span>])</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Number of cases"</span>)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="Covid19_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
-</div>
-</div>
-<div class="cell" data-scrolled="true" data-execution_count="241">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df_India_2022[<span class="st">"date"</span>] <span class="op">=</span> df_India_2022[<span class="st">"date"</span>].dt.strftime(<span class="st">'%B'</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>months <span class="op">=</span> [<span class="st">"January"</span>, <span class="st">"February"</span>, <span class="st">"March"</span>, <span class="st">"April"</span>, <span class="st">"May"</span>, <span class="st">"June"</span>,<span class="st">"July"</span>, <span class="st">"August"</span>, <span class="st">"September"</span>]</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>df_India_2022[<span class="st">'date'</span>] <span class="op">=</span> pd.Categorical(df_India_2022[<span class="st">'date'</span>], categories<span class="op">=</span>months, ordered<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>df_India_2022.sort_values(by<span class="op">=</span><span class="st">"date"</span>,inplace<span class="op">=</span><span class="va">True</span>, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>df_India_2022.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="241">
-
-<div>
-
-<table class="dataframe table table-sm table-striped">
-  <thead>
-    <tr>
+    <tr style="text-align: right;">
       <th></th>
       <th>iso_code</th>
       <th>continent</th>
@@ -1214,33 +1329,55 @@ Length: 67, dtype: object</code></pre>
   </tbody>
 </table>
 <p>5 rows × 67 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df_India_2022</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s2">&quot;new_cases&quot;</span><span class="p">,</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;date&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
-</div>
-<div class="cell" data-execution_count="218">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> df_India_2022.boxplot(column<span class="op">=</span><span class="st">"new_cases"</span>,by<span class="op">=</span><span class="st">"date"</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">""</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="Covid19_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
+<div class="cell_output docutils container">
+<img alt="_images/c0ba01806aafd1eba091c6e99dc64a78cbc71311d44682380daa15075d5b63b6.png" src="_images/c0ba01806aafd1eba091c6e99dc64a78cbc71311d44682380daa15075d5b63b6.png" />
 </div>
 </div>
 </section>
-<section id="seaborn-library" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="seaborn-library"><span class="header-section-number">1.3</span> Seaborn library</h2>
-<div class="cell" data-execution_count="223">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="data-visualization">
+<h2>Data visualization<a class="headerlink" href="#data-visualization" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+</pre></div>
 </div>
-<div class="cell" data-execution_count="224">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>new_df <span class="op">=</span> df1.loc[df1[<span class="st">'location'</span>].isin([<span class="st">"India"</span>,<span class="st">"United States"</span>])]</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>new_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="224">
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_df</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df1</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;India&quot;</span><span class="p">,</span><span class="s2">&quot;United States&quot;</span><span class="p">])]</span>
+<span class="n">new_df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-<table class="dataframe table table-sm table-striped">
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
   <thead>
-    <tr>
+    <tr style="text-align: right;">
       <th></th>
       <th>iso_code</th>
       <th>continent</th>
@@ -1533,289 +1670,735 @@ Length: 67, dtype: object</code></pre>
   </tbody>
 </table>
 <p>1910 rows × 67 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">jointplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">new_df</span><span class="p">,</span>\
+              <span class="n">x</span><span class="o">=</span><span class="s2">&quot;new_cases&quot;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s2">&quot;new_deaths&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;location&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.JointGrid at 0x1786c8c6b50&gt;
+</pre></div>
+</div>
+<img alt="_images/5c8fb71597a54efc8b805355afc0939d0595a0fbfa8c6ba906f93590e93b29be.png" src="_images/5c8fb71597a54efc8b805355afc0939d0595a0fbfa8c6ba906f93590e93b29be.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">jointplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">new_df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;total_cases&quot;</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="s2">&quot;total_vaccinations&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;location&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.JointGrid at 0x1786ca04220&gt;
+</pre></div>
+</div>
+<img alt="_images/5178e5be10ac9a9a7f40f8d547a21230eb249ef7b06dfd07f4a3d434344cd2ce.png" src="_images/5178e5be10ac9a9a7f40f8d547a21230eb249ef7b06dfd07f4a3d434344cd2ce.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">new_df</span><span class="p">[[</span><span class="s2">&quot;location&quot;</span><span class="p">,</span><span class="s2">&quot;total_cases&quot;</span><span class="p">,</span><span class="s2">&quot;total_deaths&quot;</span><span class="p">,</span><span class="s2">&quot;total_vaccinations&quot;</span><span class="p">]],</span><span class="n">hue</span><span class="o">=</span><span class="s2">&quot;location&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;seaborn.axisgrid.PairGrid at 0x1786cb43af0&gt;
+</pre></div>
+</div>
+<img alt="_images/d41ea5a2207cc47193503a11e9b3dd11a4c0ee96d281fb161cf71151f4d06b1a.png" src="_images/d41ea5a2207cc47193503a11e9b3dd11a4c0ee96d281fb161cf71151f4d06b1a.png" />
+</div>
+</div>
+</section>
+<section id="geopandas">
+<h2>Geopandas<a class="headerlink" href="#geopandas" title="Link to this heading">#</a></h2>
+<p>The geopandas library facilitates plot data over maps and can be installed using the command <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">geopandas</span></code>. To work with this library, we need the shape files for the locations over which the data needs to be plotted. Here, we’ll plot the total_cases over the world map. We’ll use the countries shape files from <a class="reference external" href="https://github.com/nvkelso/natural-earth-vector/tree/master/110m_cultural">this link</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+</pre></div>
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="225">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>sns.jointplot(data<span class="op">=</span>new_df,<span class="op">\</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>              x<span class="op">=</span><span class="st">"new_cases"</span>,y<span class="op">=</span><span class="st">"new_deaths"</span>, hue<span class="op">=</span><span class="st">"location"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="225">
-<pre><code>&lt;seaborn.axisgrid.JointGrid at 0x23a3cb50d00&gt;</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="Covid19_files/figure-html/cell-22-output-2.png" class="img-fluid"></p>
+<p>First we’ll create a new dataframe having the last row for each country since that would have the lastest count for the total_cases.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df1_last</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;location&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="p">()</span>
+<span class="n">df1_last</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
-<div class="cell" data-execution_count="226">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sns.jointplot(data<span class="op">=</span>new_df, x<span class="op">=</span><span class="st">"total_cases"</span>,y<span class="op">=</span><span class="st">"total_vaccinations"</span>, hue<span class="op">=</span><span class="st">"location"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="226">
-<pre><code>&lt;seaborn.axisgrid.JointGrid at 0x23a3cc41430&gt;</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="Covid19_files/figure-html/cell-23-output-2.png" class="img-fluid"></p>
-</div>
-</div>
-<div class="cell" data-execution_count="227">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>sns.pairplot(new_df[[<span class="st">"location"</span>,<span class="st">"total_cases"</span>,<span class="st">"total_deaths"</span>,<span class="st">"total_vaccinations"</span>]],hue<span class="op">=</span><span class="st">"location"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="227">
-<pre><code>&lt;seaborn.axisgrid.PairGrid at 0x23a3cdc6d00&gt;</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="Covid19_files/figure-html/cell-24-output-2.png" class="img-fluid"></p>
-</div>
-</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>iso_code</th>
+      <th>continent</th>
+      <th>date</th>
+      <th>total_cases</th>
+      <th>new_cases</th>
+      <th>new_cases_smoothed</th>
+      <th>total_deaths</th>
+      <th>new_deaths</th>
+      <th>new_deaths_smoothed</th>
+      <th>total_cases_per_million</th>
+      <th>...</th>
+      <th>female_smokers</th>
+      <th>male_smokers</th>
+      <th>handwashing_facilities</th>
+      <th>hospital_beds_per_thousand</th>
+      <th>life_expectancy</th>
+      <th>human_development_index</th>
+      <th>excess_mortality_cumulative_absolute</th>
+      <th>excess_mortality_cumulative</th>
+      <th>excess_mortality</th>
+      <th>excess_mortality_cumulative_per_million</th>
+    </tr>
+    <tr>
+      <th>location</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Afghanistan</th>
+      <td>AFG</td>
+      <td>Asia</td>
+      <td>2022-09-06</td>
+      <td>194614.0</td>
+      <td>259.0</td>
+      <td>230.000</td>
+      <td>7783.0</td>
+      <td>0.0</td>
+      <td>0.857</td>
+      <td>4853.282</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>37.746</td>
+      <td>0.50</td>
+      <td>64.83</td>
+      <td>0.511</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Africa</th>
+      <td>OWID_AFR</td>
+      <td>None</td>
+      <td>2022-09-06</td>
+      <td>12333163.0</td>
+      <td>1550.0</td>
+      <td>1188.714</td>
+      <td>256572.0</td>
+      <td>5.0</td>
+      <td>7.714</td>
+      <td>8857.522</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Albania</th>
+      <td>ALB</td>
+      <td>Europe</td>
+      <td>2022-09-06</td>
+      <td>330283.0</td>
+      <td>62.0</td>
+      <td>180.857</td>
+      <td>3583.0</td>
+      <td>0.0</td>
+      <td>0.143</td>
+      <td>115697.566</td>
+      <td>...</td>
+      <td>7.1</td>
+      <td>51.2</td>
+      <td>NaN</td>
+      <td>2.89</td>
+      <td>78.57</td>
+      <td>0.795</td>
+      <td>16257.3</td>
+      <td>32.60</td>
+      <td>-3.38</td>
+      <td>5694.904211</td>
+    </tr>
+    <tr>
+      <th>Algeria</th>
+      <td>DZA</td>
+      <td>Africa</td>
+      <td>2022-09-06</td>
+      <td>270476.0</td>
+      <td>15.0</td>
+      <td>29.143</td>
+      <td>6879.0</td>
+      <td>0.0</td>
+      <td>0.143</td>
+      <td>6122.418</td>
+      <td>...</td>
+      <td>0.7</td>
+      <td>30.4</td>
+      <td>83.741</td>
+      <td>1.90</td>
+      <td>76.88</td>
+      <td>0.748</td>
+      <td>49888.7</td>
+      <td>26.86</td>
+      <td>29.47</td>
+      <td>1129.266490</td>
+    </tr>
+    <tr>
+      <th>Andorra</th>
+      <td>AND</td>
+      <td>Europe</td>
+      <td>2022-09-06</td>
+      <td>46027.0</td>
+      <td>0.0</td>
+      <td>0.000</td>
+      <td>154.0</td>
+      <td>0.0</td>
+      <td>0.000</td>
+      <td>582369.613</td>
+      <td>...</td>
+      <td>29.0</td>
+      <td>37.8</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>83.73</td>
+      <td>0.868</td>
+      <td>89.6</td>
+      <td>27.20</td>
+      <td>31.41</td>
+      <td>1133.689298</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 66 columns</p>
+</div></div></div>
+</div>
+<p>Read the shape file into a dataframe</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;C:/Users/bioinfo guru/Downloads/ne_110m_land/ne_110m_admin_0_countries.shp&#39;</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<p>The next step is to merge the Covid-19 dataframe with the shape file dataframe created above. The country name in two dataframe will be used for this merging. An important point to consider here is that the names for different countries in the two dataframes should be exactly same for this merging to work correctly. In the <code class="docutils literal notranslate"><span class="pre">gdf</span></code> dataframe, under the SOVEREIGNT column the full name for USA is United States of America while in our Covid-19 dataframe it is United States. So, we’ll edit <code class="docutils literal notranslate"><span class="pre">gdf</span></code> to make the country name same in the two dataframes. Similarly, we must ensure that other names match as well.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">replace</span><span class="p">([</span><span class="s1">&#39;United States of America&#39;</span><span class="p">],</span> <span class="s1">&#39;United States&#39;</span><span class="p">)</span>
+<span class="n">gdf</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>featurecla</th>
+      <th>scalerank</th>
+      <th>LABELRANK</th>
+      <th>SOVEREIGNT</th>
+      <th>SOV_A3</th>
+      <th>ADM0_DIF</th>
+      <th>LEVEL</th>
+      <th>TYPE</th>
+      <th>TLC</th>
+      <th>ADMIN</th>
+      <th>...</th>
+      <th>FCLASS_TR</th>
+      <th>FCLASS_ID</th>
+      <th>FCLASS_PL</th>
+      <th>FCLASS_GR</th>
+      <th>FCLASS_IT</th>
+      <th>FCLASS_NL</th>
+      <th>FCLASS_SE</th>
+      <th>FCLASS_BD</th>
+      <th>FCLASS_UA</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>6</td>
+      <td>Fiji</td>
+      <td>FJI</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>Fiji</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>MULTIPOLYGON (((180.00000 -16.06713, 180.00000...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>3</td>
+      <td>United Republic of Tanzania</td>
+      <td>TZA</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>United Republic of Tanzania</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>POLYGON ((33.90371 -0.95000, 34.07262 -1.05982...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>7</td>
+      <td>Western Sahara</td>
+      <td>SAH</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Indeterminate</td>
+      <td>1</td>
+      <td>Western Sahara</td>
+      <td>...</td>
+      <td>Unrecognized</td>
+      <td>Unrecognized</td>
+      <td>Unrecognized</td>
+      <td>None</td>
+      <td>None</td>
+      <td>Unrecognized</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>POLYGON ((-8.66559 27.65643, -8.66512 27.58948...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Canada</td>
+      <td>CAN</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>Canada</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>MULTIPOLYGON (((-122.84000 49.00000, -122.9742...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>2</td>
+      <td>United States</td>
+      <td>US1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Country</td>
+      <td>1</td>
+      <td>United States</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>MULTIPOLYGON (((-122.84000 49.00000, -120.0000...</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>172</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>5</td>
+      <td>Republic of Serbia</td>
+      <td>SRB</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>Republic of Serbia</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>POLYGON ((18.82982 45.90887, 18.82984 45.90888...</td>
+    </tr>
+    <tr>
+      <th>173</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>6</td>
+      <td>Montenegro</td>
+      <td>MNE</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>Montenegro</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>POLYGON ((20.07070 42.58863, 19.80161 42.50009...</td>
+    </tr>
+    <tr>
+      <th>174</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>6</td>
+      <td>Kosovo</td>
+      <td>KOS</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Disputed</td>
+      <td>1</td>
+      <td>Kosovo</td>
+      <td>...</td>
+      <td>Admin-0 country</td>
+      <td>Unrecognized</td>
+      <td>Admin-0 country</td>
+      <td>Unrecognized</td>
+      <td>Admin-0 country</td>
+      <td>Admin-0 country</td>
+      <td>Admin-0 country</td>
+      <td>Admin-0 country</td>
+      <td>Unrecognized</td>
+      <td>POLYGON ((20.59025 41.85541, 20.52295 42.21787...</td>
+    </tr>
+    <tr>
+      <th>175</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>5</td>
+      <td>Trinidad and Tobago</td>
+      <td>TTO</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>Trinidad and Tobago</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>POLYGON ((-61.68000 10.76000, -61.10500 10.890...</td>
+    </tr>
+    <tr>
+      <th>176</th>
+      <td>Admin-0 country</td>
+      <td>1</td>
+      <td>3</td>
+      <td>South Sudan</td>
+      <td>SDS</td>
+      <td>0</td>
+      <td>2</td>
+      <td>Sovereign country</td>
+      <td>1</td>
+      <td>South Sudan</td>
+      <td>...</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>POLYGON ((30.83385 3.50917, 29.95350 4.17370, ...</td>
+    </tr>
+  </tbody>
+</table>
+<p>177 rows × 169 columns</p>
+</div></div></div>
+</div>
+<p>Now, lets merge the two dataframes on country names i.e. <code class="docutils literal notranslate"><span class="pre">gdf</span></code> on SOVEREIGNT and <code class="docutils literal notranslate"><span class="pre">df1_last</span></code> on location.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">merged_gdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df1_last</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;SOVEREIGNT&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;location&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Plot the data</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span>  <span class="mi">6</span><span class="p">))</span>
+<span class="n">merged_gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s1">&#39;total_cases&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;YlOrRd&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;0.8&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;COVID-19 Cases by Area&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/528c38d7d8f3b07b9f34f246524cc5e0bd461d8abfdd3c433795fc5584d3ef7e.png" src="_images/528c38d7d8f3b07b9f34f246524cc5e0bd461d8abfdd3c433795fc5584d3ef7e.png" />
+</div>
+</div>
+</section>
 </section>
 
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
     }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const disableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'prefetch';
-    }
-  }
-  const enableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'stylesheet';
-    }
-  }
-  const manageTransitions = (selector, allowTransitions) => {
-    const els = window.document.querySelectorAll(selector);
-    for (let i=0; i < els.length; i++) {
-      const el = els[i];
-      if (allowTransitions) {
-        el.classList.remove('notransition');
-      } else {
-        el.classList.add('notransition');
-      }
-    }
-  }
-  const toggleColorMode = (alternate) => {
-    // Switch the stylesheets
-    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-    manageTransitions('#quarto-margin-sidebar .nav-link', false);
-    if (alternate) {
-      enableStylesheet(alternateStylesheets);
-      for (const sheetNode of alternateStylesheets) {
-        if (sheetNode.id === "quarto-bootstrap") {
-          toggleBodyColorMode(sheetNode);
-        }
-      }
-    } else {
-      disableStylesheet(alternateStylesheets);
-      toggleBodyColorPrimary();
-    }
-    manageTransitions('#quarto-margin-sidebar .nav-link', true);
-    // Switch the toggles
-    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-    for (let i=0; i < toggles.length; i++) {
-      const toggle = toggles[i];
-      if (toggle) {
-        if (alternate) {
-          toggle.classList.add("alternate");     
-        } else {
-          toggle.classList.remove("alternate");
-        }
-      }
-    }
-  }
-  const isFileUrl = () => { 
-    return window.location.protocol === 'file:';
-  }
-  const hasAlternateSentinel = () => {  
-    let styleSentinel = getColorSchemeSentinel();
-    if (styleSentinel !== null) {
-      return styleSentinel === "alternate";
-    } else {
-      return false;
-    }
-  }
-  const setStyleSentinel = (alternate) => {
-    const value = alternate ? "alternate" : "default";
-    if (!isFileUrl()) {
-      window.localStorage.setItem("quarto-color-scheme", value);
-    } else {
-      localAlternateSentinel = value;
-    }
-  }
-  const getColorSchemeSentinel = () => {
-    if (!isFileUrl()) {
-      const storageValue = window.localStorage.getItem("quarto-color-scheme");
-      return storageValue != null ? storageValue : localAlternateSentinel;
-    } else {
-      return localAlternateSentinel;
-    }
-  }
-  let localAlternateSentinel = 'default';
-  // Dark / light mode switch
-  window.quartoToggleColorScheme = () => {
-    // Read the current dark / light value 
-    let toAlternate = !hasAlternateSentinel();
-    toggleColorMode(toAlternate);
-    setStyleSentinel(toAlternate);
-  };
-  // Ensure there is a toggle, if there isn't float one in the top right
-  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-    const a = window.document.createElement('a');
-    a.classList.add('top-right');
-    a.classList.add('quarto-color-scheme-toggle');
-    a.href = "";
-    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-    const i = window.document.createElement("i");
-    i.classList.add('bi');
-    a.appendChild(i);
-    window.document.body.appendChild(a);
-  }
-  // Switch to dark mode if need be
-  if (hasAlternateSentinel()) {
-    toggleColorMode(true);
-  } 
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
-    }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    setTimeout(function() {
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  function tippyHover(el, contentFn) {
-    const config = {
-      allowHTML: true,
-      content: contentFn,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start'
-    };
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
-    });
-  }
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
-      });
-      return popup.innerHTML;
-    });
-  }
-});
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
-      </a>          
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Preface</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Interactive_visual.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Interactive data visualization</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
   </div>
-  <div class="nav-page nav-page-next">
-      <a href="./Interactive_visual.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Interactive data visualization</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
-</div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
-    <div class="nav-footer-left">Copyright 2022, bioinfo.guru</div>   
-    <div class="nav-footer-right">
-      <ul class="footer-items list-unstyled">
-    <li class="nav-item compact">
-    <a class="nav-link" href="https://www.facebook.com/profile.php?id=100078250833738">
-      <i class="bi bi-facebook" role="img">
-</i> 
-    </a>
-  </li>  
-    <li class="nav-item compact">
-    <a class="nav-link" href="https://www.instagram.com/bioinfo.guru/">
-      <i class="bi bi-instagram" role="img">
-</i> 
-    </a>
-  </li>  
-    <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/bioinfo-guru-68a8b7231/">
-      <i class="bi bi-linkedin" role="img">
-</i> 
-    </a>
-  </li>  
-    <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/bioinfo_guru">
-      <i class="bi bi-twitter" role="img">
-</i> 
-    </a>
-  </li>  
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-axis-scale">Changing axis scale</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#function-to-plot-total-cases">Function to plot total cases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-datetime-object">The datetime object</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#categorical-variables">Categorical variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-visualization">Data visualization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#geopandas">Geopandas</a></li>
 </ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Manish Datt
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
   </div>
-</footer>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
-
-
-</body></html>
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

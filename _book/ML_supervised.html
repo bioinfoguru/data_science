@@ -1,280 +1,413 @@
+
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.38">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Science - 4&nbsp; Supervised learning</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
+<html lang="en" data-content_root="./" >
 
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<link href="./PCA_tutorial.html" rel="next">
-<link href="./kmeans.html" rel="prev">
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<script id="quarto-search-options" type="application/json">{
-  "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
-  }
-}</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+    <title>Supervised learning &#8212; Data Science</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
+  
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-<link rel="stylesheet" href="custom_css.css">
-</head>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-<body class="nav-sidebar floating">
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'ML_supervised';</script>
+    <link rel="icon" href="_static/logo_final_transparent.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Principal Component Analysis" href="PCA_tutorial.html" />
+    <link rel="prev" title="Unsupervised learning" href="kmeans.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-<div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
-      </button>
-    </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
-<!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./" class="sidebar-logo-link">
-      <img src="./logo_horizontal_transparent.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
-      </a>
-    <div class="sidebar-title mb-0 py-0">
-      <a href="./">Data Science</a> 
-        <div class="sidebar-tools-main">
-  <a href="" class="quarto-color-scheme-toggle sidebar-tool" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-  <a href="" class="quarto-reader-toggle sidebar-tool" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
-  <div class="quarto-reader-toggle-btn">
-  <i class="bi"></i>
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
   </div>
-</a>
-</div>
-    </div>
-      </div>
-    <div class="sidebar-menu-container"> 
-    <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./Covid19.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Covid19 data analysis</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./Interactive_visual.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Interactive data visualization</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./kmeans.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unsupervised learning</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./ML_supervised.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./PCA_tutorial.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></a>
-  </div>
-</li>
-    </ul>
-    </div>
-</nav>
-<!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#datasets" id="toc-datasets" class="nav-link active" data-scroll-target="#datasets"> <span class="header-section-number">4.1</span> Datasets</a></li>
-  <li><a href="#feature-extraction" id="toc-feature-extraction" class="nav-link" data-scroll-target="#feature-extraction"> <span class="header-section-number">4.2</span> Feature extraction</a></li>
-  <li><a href="#model-building" id="toc-model-building" class="nav-link" data-scroll-target="#model-building"> <span class="header-section-number">4.3</span> Model building</a></li>
-  <li><a href="#cross-validation" id="toc-cross-validation" class="nav-link" data-scroll-target="#cross-validation"> <span class="header-section-number">4.4</span> Cross-validation</a></li>
-  <li><a href="#hyperparameters" id="toc-hyperparameters" class="nav-link" data-scroll-target="#hyperparameters"> <span class="header-section-number">4.5</span> Hyperparameters</a></li>
-  <li><a href="#grid-search" id="toc-grid-search" class="nav-link" data-scroll-target="#grid-search"> <span class="header-section-number">4.6</span> Grid Search</a></li>
-  <li><a href="#confusion-matrix" id="toc-confusion-matrix" class="nav-link" data-scroll-target="#confusion-matrix"> <span class="header-section-number">4.7</span> Confusion matrix</a></li>
-  <li><a href="#roc-curve" id="toc-roc-curve" class="nav-link" data-scroll-target="#roc-curve"> <span class="header-section-number">4.8</span> ROC Curve</a>
-  <ul class="collapse">
-  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
-  </ul></li>
-  </ul>
-</nav>
-    </div>
-<!-- main -->
-<main class="content" id="quarto-document-content">
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></h1>
-</div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
 
-
-
-<div class="quarto-title-meta">
-
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
     
     
   </div>
   
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
 
-</header>
+  
 
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo_final_horizontal.png" class="logo__image only-light" alt="Data Science - Home"/>
+    <script>document.write(`<img src="_static/logo_final_horizontal.png" class="logo__image only-dark" alt="Data Science - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Data visualization</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Covid19.html">Covid19 data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Interactive_visual.html">Interactive data visualization</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Machine Learning</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="kmeans.html">Unsupervised learning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Supervised learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PCA_tutorial.html">Principal Component Analysis</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Supervised learning</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#datasets">Datasets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-extraction">Feature extraction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-building">Model building</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-validation">Cross-validation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperparameters">Hyperparameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid-search">Grid Search</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#confusion-matrix">Confusion matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#roc-curve">ROC Curve</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise">Exercise</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="supervised-learning">
+<h1>Supervised learning<a class="headerlink" href="#supervised-learning" title="Link to this heading">#</a></h1>
 <p>Classification for proteins based on sequence information is an important tool for their functional annotation. Supervised machine learning algorithms are a lucrative option to develop classification models. Starting with a set to protein sequences that belong to a particular class (positive dataset) and a set of protein sequences that do not belong to that particualar class (negative dataset), machines learning model is built to classify unknown protein sequences. The model trains itself based on certain set of “features” that represent the different sequences in the two datasets.</p>
-<section id="datasets" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="datasets"><span class="header-section-number">4.1</span> Datasets</h2>
-<p>The first step for any supervised machine learning execise is to prepare a dataset having positive and negative cases. In our case we’ll need a set of protein sequences that would represent positive and negative classes. We know that proteins are polymers made of 20 different amino acids. Proteins have been classified into different families based on their sequence similarity. For practice, we’ll use some of the dataset that available in the literature. Below are two such datasets correponding to two different binary classification model building. - Positive and negative datasets corresponding to one of the protein families are available <a href="https://webs.iiitd.edu.in/raghava/icaars/supplementary.html">here</a>. - A dataset comprising of UniProt IDs of postive and negative sequences is available <a href="https://static-content.springer.com/esm/art%3A10.1038%2Fs41598-018-27338-9/MediaObjects/41598_2018_27338_MOESM1_ESM.xlsx">here</a>.</p>
+<section id="datasets">
+<h2>Datasets<a class="headerlink" href="#datasets" title="Link to this heading">#</a></h2>
+<p>The first step for any supervised machine learning execise is to prepare a dataset having positive and negative cases. In our case we’ll need a set of protein sequences that would represent positive and negative classes. We know that proteins are polymers made of 20 different amino acids. Proteins have been classified into different families based on their sequence similarity. For practice, we’ll use some of the dataset that available in the literature. Below are two such datasets correponding to two different binary classification model building.</p>
+<ul class="simple">
+<li><p>Positive and negative datasets corresponding to one of the protein families are available <a class="reference external" href="https://webs.iiitd.edu.in/raghava/icaars/supplementary.html">here</a>.</p></li>
+<li><p>A dataset comprising of UniProt IDs of postive and negative sequences is available <a class="reference external" href="https://static-content.springer.com/esm/art%3A10.1038%2Fs41598-018-27338-9/MediaObjects/41598_2018_27338_MOESM1_ESM.xlsx">here</a>.</p></li>
+</ul>
 </section>
-<section id="feature-extraction" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="feature-extraction"><span class="header-section-number">4.2</span> Feature extraction</h2>
+<section id="feature-extraction">
+<h2>Feature extraction<a class="headerlink" href="#feature-extraction" title="Link to this heading">#</a></h2>
 <p>The next and one of the most important step in machine learning is feature extraction. For classifcation of protein sequences we cannot input the amino acid sequence directly to the classifier. So, we need to transform our data such that each sequence can be represent as a feature of constant length. Amino acid composition is one of the feature that can be used in this senario. Amino Acid Composition refers to frequency of each amino acid within a protein sequence. E.g. if a protein has a sequence ‘MSAARQTTRKAE’ it’s amino acid composition can be represented as a vector of length 20:</p>
-<p>‘A’:3,‘C’:0,‘D’:0,‘E’:1,‘F’:0,‘G’:0,‘H’:0,‘I’:0,‘K’:1,‘L’:0,‘M’:1,‘N’:0,‘P’:0,‘Q’:1,‘R’:1,‘S’:1,‘T’:2,‘V’:0,‘W’:0,‘Y’:0</p>
+<p>‘A’:3,’C’:0,’D’:0,’E’:1,’F’:0,’G’:0,’H’:0,’I’:0,’K’:1,’L’:0,’M’:1,’N’:0,’P’:0,’Q’:1,’R’:1,’S’:1,’T’:2,’V’:0,’W’:0,’Y’:0</p>
 <p>In this way any protein sequence can be represented as a feature vector of fixed length. This is important because the protein sequences, even within the same class, can have different number of amino acids. To start with feature extraction and model building, we’ll import the required libraries.</p>
-<div class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> Bio <span class="im">import</span> SeqIO</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> Bio.SeqUtils.ProtParam <span class="im">import</span> ProteinAnalysis</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> model_selection</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> SVC</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">SeqIO</span>
+<span class="kn">from</span> <span class="nn">Bio.SeqUtils.ProtParam</span> <span class="kn">import</span> <span class="n">ProteinAnalysis</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">model_selection</span>
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+</pre></div>
 </div>
-<p>First, we’ll use <code>SeqIO.parse</code> function to read the sequence files and make a dictionary of all the sequences using the <code>to_dict</code> function. This dictionary would have fasta header as the keys of the dictionary and the sequence object as the corresponding values.</p>
-<div class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>positive_dict <span class="op">=</span> SeqIO.to_dict(SeqIO.parse(<span class="st">"positive-aars.fasta"</span>, <span class="st">"fasta"</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>negative_dict <span class="op">=</span> SeqIO.to_dict(SeqIO.parse(<span class="st">"negative-aars.fasta"</span>, <span class="st">"fasta"</span>))</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">## Amino acid composition calculation##</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#c1 = ProteinAnalysis("AAAASTRRRTRRAWEQWERQW").count_amino_acids()</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df1 <span class="op">=</span> pd.DataFrame()</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> keys,values <span class="kw">in</span> positive_dict.items():</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    df1 <span class="op">=</span> pd.concat([df1, pd.Series(ProteinAnalysis(<span class="bu">str</span>(values.seq)).get_amino_acids_percent(),name<span class="op">=</span><span class="st">'1'</span>).to_frame().T])</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> keys,values <span class="kw">in</span> negative_dict.items():</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    df1 <span class="op">=</span> pd.concat([df1, pd.Series(ProteinAnalysis(<span class="bu">str</span>(values.seq)).get_amino_acids_percent(),name<span class="op">=</span><span class="st">'-1'</span>).to_frame().T])</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of positive samples: "</span>, <span class="bu">len</span>(positive_dict))</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of negative samples: "</span>, <span class="bu">len</span>(negative_dict))</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>df1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Number of positive samples:  117
-Number of negative samples:  117</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="20">
+</div>
+<p>First, we’ll use <code class="docutils literal notranslate"><span class="pre">SeqIO.parse</span></code> function to read the sequence files and make a dictionary of all the sequences using the <code class="docutils literal notranslate"><span class="pre">to_dict</span></code> function. This dictionary would have fasta header as the keys of the dictionary and the sequence object as the corresponding values.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p1</span> <span class="o">=</span> <span class="n">ProteinAnalysis</span><span class="p">(</span><span class="s2">&quot;AAAASTRRRTRRAWEQWERQW&quot;</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">get_amino_acids_percent</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;A&#39;: 0.23809523809523808,
+ &#39;C&#39;: 0.0,
+ &#39;D&#39;: 0.0,
+ &#39;E&#39;: 0.09523809523809523,
+ &#39;F&#39;: 0.0,
+ &#39;G&#39;: 0.0,
+ &#39;H&#39;: 0.0,
+ &#39;I&#39;: 0.0,
+ &#39;K&#39;: 0.0,
+ &#39;L&#39;: 0.0,
+ &#39;M&#39;: 0.0,
+ &#39;N&#39;: 0.0,
+ &#39;P&#39;: 0.0,
+ &#39;Q&#39;: 0.09523809523809523,
+ &#39;R&#39;: 0.2857142857142857,
+ &#39;S&#39;: 0.047619047619047616,
+ &#39;T&#39;: 0.09523809523809523,
+ &#39;V&#39;: 0.0,
+ &#39;W&#39;: 0.14285714285714285,
+ &#39;Y&#39;: 0.0}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">positive_dict</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;positive-aars.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">))</span>
+<span class="n">negative_dict</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;negative-aars.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">))</span>
 
-<div>
+<span class="c1">## Amino acid composition calculation##</span>
+<span class="c1">#c1 = ProteinAnalysis(&quot;AAAASTRRRTRRAWEQWERQW&quot;).count_amino_acids()</span>
+<span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">keys</span><span class="p">,</span><span class="n">values</span> <span class="ow">in</span> <span class="n">positive_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df1</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">ProteinAnalysis</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">seq</span><span class="p">))</span><span class="o">.</span><span class="n">get_amino_acids_percent</span><span class="p">(),</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">keys</span><span class="p">,</span><span class="n">values</span> <span class="ow">in</span> <span class="n">negative_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df1</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">ProteinAnalysis</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">seq</span><span class="p">))</span><span class="o">.</span><span class="n">get_amino_acids_percent</span><span class="p">(),</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;-1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">])</span>
 
-<table class="dataframe table table-sm table-striped">
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of positive samples: &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">positive_dict</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of negative samples: &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">negative_dict</span><span class="p">))</span>
+
+<span class="n">df1</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of positive samples:  117
+Number of negative samples:  117
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
   <thead>
-    <tr>
+    <tr style="text-align: right;">
       <th></th>
       <th>A</th>
       <th>C</th>
@@ -555,265 +688,467 @@ Number of negative samples:  117</code></pre>
   </tbody>
 </table>
 <p>234 rows × 20 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#correlation between different features </span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">corr</span><span class="p">())</span>
+</pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:&gt;
+</pre></div>
 </div>
-<div class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#correlation between different features </span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sns.heatmap(df1.corr())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="21">
-<pre><code>&lt;AxesSubplot:&gt;</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="ML_supervised_files/figure-html/cell-4-output-2.png" class="img-fluid"></p>
+<img alt="_images/bc92117ec743de6a23f97f4ac5012a25f7fd6e8630611a8f8b1bacb8d5509b65.png" src="_images/bc92117ec743de6a23f97f4ac5012a25f7fd6e8630611a8f8b1bacb8d5509b65.png" />
 </div>
 </div>
 </section>
-<section id="model-building" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="model-building"><span class="header-section-number">4.3</span> Model building</h2>
+<section id="model-building">
+<h2>Model building<a class="headerlink" href="#model-building" title="Link to this heading">#</a></h2>
 <p>Create data and label matrices.</p>
-<div class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df1_matrix <span class="op">=</span> df1.iloc[:,<span class="bu">range</span>(<span class="dv">20</span>)].values <span class="co">## X matrix</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> df1.index.values <span class="co">## Y matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df1_matrix</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)]</span><span class="o">.</span><span class="n">values</span> <span class="c1">## X matrix</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span> <span class="c1">## Y matrix</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">labels</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
+       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
+       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
+       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
+       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
+       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
+       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
+       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
+       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;], dtype=object)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Create training and testing datasets, build the model and check prediction accuracy.</p>
-<div class="cell" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Split-out validation dataset"</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>validation_size <span class="op">=</span> <span class="fl">0.20</span> <span class="co"># 20% data for testing</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>seed <span class="op">=</span> <span class="va">None</span> <span class="co"># change to int for reproducibility</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>X_train, X_validation, Y_train, Y_validation <span class="op">=</span> model_selection.train_test_split(df1_matrix, labels, <span class="op">\</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                                                                               test_size<span class="op">=</span>validation_size, <span class="op">\</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                                                                                random_state<span class="op">=</span>seed)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>new_clf <span class="op">=</span> SVC()</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>model1 <span class="op">=</span> new_clf.fit(X_train, Y_train)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>Y_predicted <span class="op">=</span> model1.predict(X_validation)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>score1 <span class="op">=</span> accuracy_score(Y_predicted, Y_validation)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(score1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0.8085106382978723</code></pre>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Split-out validation dataset&quot;</span>
+<span class="n">validation_size</span> <span class="o">=</span> <span class="mf">0.20</span> <span class="c1"># 20% data for testing</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># change to int for reproducibility</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_validation</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_validation</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="n">df1_matrix</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> \
+                                                                               <span class="n">test_size</span><span class="o">=</span><span class="n">validation_size</span><span class="p">,</span> \
+                                                                                <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+<span class="n">new_clf</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">()</span>
+<span class="n">model1</span> <span class="o">=</span> <span class="n">new_clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">Y_predicted</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_validation</span><span class="p">)</span>
+<span class="n">score1</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_predicted</span><span class="p">,</span> <span class="n">Y_validation</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">score1</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
-<div class="cell" data-execution_count="28">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df1_matrix.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="28">
-<pre><code>(234, 20)</code></pre>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6808510638297872
+</pre></div>
 </div>
 </div>
-</section>
-<section id="cross-validation" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="cross-validation"><span class="header-section-number">4.4</span> Cross-validation</h2>
-<div class="cell" data-scrolled="true" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> SVC</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Test options and evaluation metric</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>scoring <span class="op">=</span> <span class="st">'accuracy'</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>kfold <span class="op">=</span> model_selection.KFold(n_splits<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>cv_results <span class="op">=</span> model_selection.cross_val_score(SVC(), df1_matrix, labels, cv<span class="op">=</span>kfold, scoring<span class="op">=</span>scoring)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cv_results)</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cv_results.mean(), cv_results.std())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[0.38297872 0.34042553 0.65957447 0.34042553 0.30434783]
-0.40555041628122107 0.12943119067958725</code></pre>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df1_matrix</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
 </div>
 </div>
-<div class="cell" data-execution_count="36">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cv_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="36">
-<pre><code>array([0.38297872, 0.34042553, 0.65957447, 0.34042553, 0.30434783])</code></pre>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(234, 20)
+</pre></div>
 </div>
-</div>
-<div class="cell" data-execution_count="30">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>SVC().get_params()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="30">
-<pre><code>{'C': 1.0,
- 'break_ties': False,
- 'cache_size': 200,
- 'class_weight': None,
- 'coef0': 0.0,
- 'decision_function_shape': 'ovr',
- 'degree': 3,
- 'gamma': 'scale',
- 'kernel': 'rbf',
- 'max_iter': -1,
- 'probability': False,
- 'random_state': None,
- 'shrinking': True,
- 'tol': 0.001,
- 'verbose': False}</code></pre>
 </div>
 </div>
 </section>
-<section id="hyperparameters" class="level2" data-number="4.5">
-<h2 data-number="4.5" class="anchored" data-anchor-id="hyperparameters"><span class="header-section-number">4.5</span> Hyperparameters</h2>
-<div class="cell" data-execution_count="53">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>clf_poly <span class="op">=</span> SVC(kernel<span class="op">=</span><span class="st">'poly'</span>, degree<span class="op">=</span><span class="dv">3</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>clf_rbf <span class="op">=</span> SVC(kernel<span class="op">=</span><span class="st">'rbf'</span>, C<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>kfold <span class="op">=</span> model_selection.KFold(n_splits<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>cv_SVM_poly_results <span class="op">=</span> model_selection.cross_val_score(clf_poly, df1_matrix, labels, cv<span class="op">=</span>kfold, scoring<span class="op">=</span>scoring)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>cv_SVM_rbf_results <span class="op">=</span> model_selection.cross_val_score(clf_rbf, df1_matrix, labels, cv<span class="op">=</span>kfold, scoring<span class="op">=</span>scoring)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cv_SVM_rbf_results)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (cv_SVM_poly_results.mean(), cv_SVM_rbf_results.mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[0.70212766 0.65957447 0.78723404 0.5106383  0.65217391]
-0.6281221091581869 0.6623496762257168</code></pre>
+<section id="cross-validation">
+<h2>Cross-validation<a class="headerlink" href="#cross-validation" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span>
+
+<span class="c1"># Test options and evaluation metric</span>
+<span class="n">scoring</span> <span class="o">=</span> <span class="s1">&#39;accuracy&#39;</span>
+
+<span class="n">kfold</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">cv_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">SVC</span><span class="p">(),</span> <span class="n">df1_matrix</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">cv_results</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cv_results</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">cv_results</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.54166667 0.625      0.5        0.83333333 0.60869565 0.69565217
+ 0.43478261 0.56521739 0.73913043 0.60869565]
+0.6152173913043478 0.11104998581213907
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cv_results</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.54166667, 0.625     , 0.5       , 0.83333333, 0.60869565,
+       0.69565217, 0.43478261, 0.56521739, 0.73913043, 0.60869565])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">SVC</span><span class="p">()</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;C&#39;: 1.0,
+ &#39;break_ties&#39;: False,
+ &#39;cache_size&#39;: 200,
+ &#39;class_weight&#39;: None,
+ &#39;coef0&#39;: 0.0,
+ &#39;decision_function_shape&#39;: &#39;ovr&#39;,
+ &#39;degree&#39;: 3,
+ &#39;gamma&#39;: &#39;scale&#39;,
+ &#39;kernel&#39;: &#39;rbf&#39;,
+ &#39;max_iter&#39;: -1,
+ &#39;probability&#39;: False,
+ &#39;random_state&#39;: None,
+ &#39;shrinking&#39;: True,
+ &#39;tol&#39;: 0.001,
+ &#39;verbose&#39;: False}
+</pre></div>
+</div>
 </div>
 </div>
 </section>
-<section id="grid-search" class="level2" data-number="4.6">
-<h2 data-number="4.6" class="anchored" data-anchor-id="grid-search"><span class="header-section-number">4.6</span> Grid Search</h2>
-<div class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> GridSearchCV</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>tuned_parameters <span class="op">=</span> [{<span class="st">'kernel'</span>: [<span class="st">'rbf'</span>], <span class="st">'gamma'</span>: [<span class="fl">1e-3</span>, <span class="fl">1e-4</span>],</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'C'</span>: [<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>, <span class="dv">10000</span>]},</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                    {<span class="st">'kernel'</span>: [<span class="st">'linear'</span>], <span class="st">'C'</span>: [<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>, <span class="dv">10000</span>]},</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                    {<span class="st">'kernel'</span>:[<span class="st">'poly'</span>], <span class="st">'C'</span>: [<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>, <span class="dv">10000</span>],</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'degree'</span>: <span class="bu">range</span>(<span class="dv">10</span>)}]</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>clf_grid <span class="op">=</span> GridSearchCV(SVC(), tuned_parameters, cv<span class="op">=</span><span class="dv">5</span>, scoring<span class="op">=</span><span class="st">'accuracy'</span>)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>clf_grid.fit(df1_matrix,labels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="14">
-<pre><code>GridSearchCV(cv=5, estimator=SVC(),
-             param_grid=[{'C': [1, 10, 100, 1000, 10000],
-                          'gamma': [0.001, 0.0001], 'kernel': ['rbf']},
-                         {'C': [1, 10, 100, 1000, 10000], 'kernel': ['linear']},
-                         {'C': [1, 10, 100, 1000, 10000],
-                          'degree': range(0, 10), 'kernel': ['poly']}],
-             scoring='accuracy')</code></pre>
+<section id="hyperparameters">
+<h2>Hyperparameters<a class="headerlink" href="#hyperparameters" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clf_poly</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;poly&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">clf_rbf</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;rbf&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">kfold</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">cv_SVM_poly_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">clf_poly</span><span class="p">,</span> <span class="n">df1_matrix</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
+<span class="n">cv_SVM_rbf_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">clf_rbf</span><span class="p">,</span> <span class="n">df1_matrix</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cv_SVM_rbf_results</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="n">cv_SVM_poly_results</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">cv_SVM_rbf_results</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</pre></div>
 </div>
 </div>
-<div class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(clf_grid.best_params_)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co">#print(clf_grid.cv_results_)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>{'C': 1, 'degree': 3, 'kernel': 'poly'}</code></pre>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.70212766 0.65957447 0.78723404 0.5106383  0.65217391]
+0.6281221091581869 0.6623496762257168
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="grid-search">
+<h2>Grid Search<a class="headerlink" href="#grid-search" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+<span class="n">tuned_parameters</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rbf&#39;</span><span class="p">],</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">],</span>
+                     <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">]},</span>
+                    <span class="p">{</span><span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;linear&#39;</span><span class="p">],</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">]},</span>
+                    <span class="p">{</span><span class="s1">&#39;kernel&#39;</span><span class="p">:[</span><span class="s1">&#39;poly&#39;</span><span class="p">],</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">],</span>
+                     <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)}]</span>
+<span class="n">clf_grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">SVC</span><span class="p">(),</span> <span class="n">tuned_parameters</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
+<span class="n">clf_grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df1_matrix</span><span class="p">,</span><span class="n">labels</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>#sk-container-id-1 {color: black;background-color: white;}#sk-container-id-1 pre{padding: 0;}#sk-container-id-1 div.sk-toggleable {background-color: white;}#sk-container-id-1 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-1 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-1 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-1 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-1 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-1 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-1 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-1 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-1 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-1 div.sk-item {position: relative;z-index: 1;}#sk-container-id-1 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-1 div.sk-item::before, #sk-container-id-1 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-1 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-1 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-1 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-1 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-1 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-1 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-1 div.sk-label-container {text-align: center;}#sk-container-id-1 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-1 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>GridSearchCV(cv=5, estimator=SVC(),
+             param_grid=[{&#x27;C&#x27;: [1, 10, 100, 1000, 10000],
+                          &#x27;gamma&#x27;: [0.001, 0.0001], &#x27;kernel&#x27;: [&#x27;rbf&#x27;]},
+                         {&#x27;C&#x27;: [1, 10, 100, 1000, 10000], &#x27;kernel&#x27;: [&#x27;linear&#x27;]},
+                         {&#x27;C&#x27;: [1, 10, 100, 1000, 10000],
+                          &#x27;degree&#x27;: range(0, 10), &#x27;kernel&#x27;: [&#x27;poly&#x27;]}],
+             scoring=&#x27;accuracy&#x27;)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox" ><label for="sk-estimator-id-1" class="sk-toggleable__label sk-toggleable__label-arrow">GridSearchCV</label><div class="sk-toggleable__content"><pre>GridSearchCV(cv=5, estimator=SVC(),
+             param_grid=[{&#x27;C&#x27;: [1, 10, 100, 1000, 10000],
+                          &#x27;gamma&#x27;: [0.001, 0.0001], &#x27;kernel&#x27;: [&#x27;rbf&#x27;]},
+                         {&#x27;C&#x27;: [1, 10, 100, 1000, 10000], &#x27;kernel&#x27;: [&#x27;linear&#x27;]},
+                         {&#x27;C&#x27;: [1, 10, 100, 1000, 10000],
+                          &#x27;degree&#x27;: range(0, 10), &#x27;kernel&#x27;: [&#x27;poly&#x27;]}],
+             scoring=&#x27;accuracy&#x27;)</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-2" type="checkbox" ><label for="sk-estimator-id-2" class="sk-toggleable__label sk-toggleable__label-arrow">estimator: SVC</label><div class="sk-toggleable__content"><pre>SVC()</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-3" type="checkbox" ><label for="sk-estimator-id-3" class="sk-toggleable__label sk-toggleable__label-arrow">SVC</label><div class="sk-toggleable__content"><pre>SVC()</pre></div></div></div></div></div></div></div></div></div></div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">clf_grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span>
+<span class="c1">#print(clf_grid.cv_results_)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;C&#39;: 1, &#39;degree&#39;: 3, &#39;kernel&#39;: &#39;poly&#39;}
+</pre></div>
+</div>
 </div>
 </div>
 <p>Build a SVM model using above hyperparameters and check the prediction accuracy.</p>
-<div class="cell" data-execution_count="37">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>clf_poly <span class="op">=</span> SVC(kernel<span class="op">=</span><span class="st">'poly'</span>,C<span class="op">=</span><span class="dv">1</span>, degree<span class="op">=</span><span class="dv">3</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>kfold <span class="op">=</span> model_selection.KFold(n_splits<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>cv_SVM_results <span class="op">=</span> model_selection.cross_val_score(clf_poly, df1_matrix, labels, cv<span class="op">=</span>kfold, scoring<span class="op">=</span>scoring)</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cv_SVM_results)</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (cv_SVM_results.mean(),cv_SVM_results.std())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[0.70212766 0.65957447 0.76595745 0.40425532 0.60869565]
-0.6281221091581869 0.12325451681757636</code></pre>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clf_poly</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;poly&#39;</span><span class="p">,</span><span class="n">C</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">kfold</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">cv_SVM_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">clf_poly</span><span class="p">,</span> <span class="n">df1_matrix</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cv_SVM_results</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="n">cv_SVM_results</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span><span class="n">cv_SVM_results</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
+</pre></div>
 </div>
 </div>
-</section>
-<section id="confusion-matrix" class="level2" data-number="4.7">
-<h2 data-number="4.7" class="anchored" data-anchor-id="confusion-matrix"><span class="header-section-number">4.7</span> Confusion matrix</h2>
-<div class="cell" data-execution_count="38">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.70212766 0.65957447 0.76595745 0.40425532 0.60869565]
+0.6281221091581869 0.12325451681757636
+</pre></div>
 </div>
-<div class="cell" data-scrolled="true" data-execution_count="51">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>clf_new <span class="op">=</span> SVC(kernel<span class="op">=</span><span class="st">'poly'</span>,degree<span class="op">=</span><span class="dv">3</span>, probability<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">## Fit model to the data ##</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>clf_new.fit(df1_matrix,labels)</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(Counter(labels))</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co">## Predict labels for the original data ##</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>clf_new_predict <span class="op">=</span> clf_new.predict(df1_matrix)</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(Counter(clf_new_predict))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Counter({'1': 117, '-1': 117})
-Counter({'-1': 121, '1': 113})</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="58">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>y_proba <span class="op">=</span> clf_new.predict_proba(df1_matrix)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>y_proba[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="58">
-<pre><code>array([0.28550858, 0.71449142])</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="45">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(clf_new_predict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="45">
-<pre><code>numpy.ndarray</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="140">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(labels,clf_new_predict)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cm)</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>fig,ax<span class="op">=</span> plt.subplots()</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>sns.heatmap(cm, square<span class="op">=</span><span class="va">True</span>, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'g'</span>, cbar<span class="op">=</span><span class="va">False</span>, ax<span class="op">=</span>ax)</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Predicted labels'</span>)</span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'True labels'</span>)</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>ax.xaxis.set_ticklabels([<span class="st">'positive'</span>, <span class="st">'negative'</span>])</span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>ax.yaxis.set_ticklabels([<span class="st">'positive'</span>, <span class="st">'negative'</span>])</span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[[108   9]
- [ 13 104]]</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="ML_supervised_files/figure-html/cell-19-output-2.png" class="img-fluid"></p>
 </div>
 </div>
 </section>
-<section id="roc-curve" class="level2" data-number="4.8">
-<h2 data-number="4.8" class="anchored" data-anchor-id="roc-curve"><span class="header-section-number">4.8</span> ROC Curve</h2>
-<div class="cell" data-execution_count="66">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> roc_curve</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> RocCurveDisplay</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>fpr, tpr, _ <span class="op">=</span> roc_curve(labels.astype(<span class="st">'int'</span>), y_proba[:, <span class="dv">1</span>])<span class="co">#clf_new_predict.astype('int'))</span></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>roc_display <span class="op">=</span> RocCurveDisplay(fpr<span class="op">=</span>fpr, tpr<span class="op">=</span>tpr).plot()</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>roc_display.figure_.set_size_inches(<span class="dv">5</span>,<span class="dv">5</span>)</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], color <span class="op">=</span> <span class="st">'grey'</span>, linestyle<span class="op">=</span><span class="st">"dashed"</span>)</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Plots the ROC curve using the sklearn methods - Good plot</span></span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co">#plot_sklearn_roc_curve(y_test, y_proba[:, 1])</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="ML_supervised_files/figure-html/cell-20-output-1.png" class="img-fluid"></p>
+<section id="confusion-matrix">
+<h2>Confusion matrix<a class="headerlink" href="#confusion-matrix" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span>
+</pre></div>
 </div>
 </div>
-<section id="exercise" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="exercise">Exercise</h3>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clf_new</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;poly&#39;</span><span class="p">,</span><span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1">## Fit model to the data ##</span>
+<span class="n">clf_new</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df1_matrix</span><span class="p">,</span><span class="n">labels</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+
+<span class="c1">## Predict labels for the original data ##</span>
+<span class="n">clf_new_predict</span> <span class="o">=</span> <span class="n">clf_new</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">df1_matrix</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">clf_new_predict</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Counter({&#39;1&#39;: 117, &#39;-1&#39;: 117})
+Counter({&#39;-1&#39;: 121, &#39;1&#39;: 113})
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_proba</span> <span class="o">=</span> <span class="n">clf_new</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">df1_matrix</span><span class="p">)</span>
+<span class="n">y_proba</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.29363345, 0.70636655])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">clf_new_predict</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>numpy.ndarray
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="n">clf_new_predict</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted labels&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;True labels&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">([</span><span class="s1">&#39;positive&#39;</span><span class="p">,</span> <span class="s1">&#39;negative&#39;</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">([</span><span class="s1">&#39;positive&#39;</span><span class="p">,</span> <span class="s1">&#39;negative&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[108   9]
+ [ 13 104]]
+</pre></div>
+</div>
+<img alt="_images/8a2e45215379572e0f8465149ef5cec0a404d34417ff959925e79863358ad679.png" src="_images/8a2e45215379572e0f8465149ef5cec0a404d34417ff959925e79863358ad679.png" />
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<div class="output text_html"><img src="https://mermaid.ink/img/CiUle2luaXQ6IHsicXVhZHJhbnRDaGFydCI6IHsiY2hhcnRXaWR0aCI6IDMwMCwgImNoYXJ0SGVpZ2h0IjogMzAwfSB9fSUlCnF1YWRyYW50Q2hhcnQKICAgIHgtYXhpcyBwb3NpdGl2ZSAtLT4gbmVnYXRpdmUKICAgIHktYXhpcyBuZWdhdGl2ZSAtLT4gcG9zaXRpdmUKICAgIHF1YWRyYW50LTEgRmFsc2UgTmVnYXRpdmUKICAgIHF1YWRyYW50LTIgVHJ1ZSBQb3NpdGl2ZQogICAgcXVhZHJhbnQtMyBGYWxzZSBQb3NpdGl2ZQogICAgcXVhZHJhbnQtNCBUcnVlIE5lZ2F0aXZlCg=="/></div></div>
+</div>
+</section>
+<section id="roc-curve">
+<h2>ROC Curve<a class="headerlink" href="#roc-curve" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clf_new_predict</span> <span class="o">=</span> <span class="n">clf_new_predict</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">clf_new_predict</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 1,  1,  1, -1,  1, -1, -1,  1,  1,  1,  1,  1,  1,  1,  1,  1, -1,
+        1, -1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
+        1,  1,  1,  1, -1,  1, -1,  1, -1,  1,  1,  1,  1,  1,  1,  1,  1,
+        1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, -1,  1,  1, -1,  1,
+       -1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
+        1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, -1,  1,  1,  1,  1,  1,
+        1,  1,  1,  1,  1, -1,  1,  1,  1,  1,  1,  1,  1,  1,  1, -1, -1,
+       -1, -1, -1, -1, -1,  1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  1, -1, -1, -1, -1, -1,
+       -1, -1, -1, -1, -1, -1,  1, -1, -1, -1, -1, -1, -1,  1, -1, -1, -1,
+       -1, -1, -1, -1, -1, -1,  1,  1, -1, -1, -1, -1, -1, -1,  1,  1, -1,
+       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  1, -1,
+       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_curve</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">RocCurveDisplay</span>
+
+<span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">),</span> <span class="n">y_proba</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="c1">#clf_new_predict.astype(&#39;int&#39;))</span>
+<span class="n">roc_display</span> <span class="o">=</span> <span class="n">RocCurveDisplay</span><span class="p">(</span><span class="n">fpr</span><span class="o">=</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="o">=</span><span class="n">tpr</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">roc_display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;dashed&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/577a35d49abd7c70ac58be18367d2cd101fb381427e3ce913781362f3d5a5cee.png" src="_images/577a35d49abd7c70ac58be18367d2cd101fb381427e3ce913781362f3d5a5cee.png" />
+</div>
+</div>
+<section id="exercise">
+<h3>Exercise<a class="headerlink" href="#exercise" title="Link to this heading">#</a></h3>
 <p><strong>Extract another feature - Di-Peptide Composition (DPC)</strong></p>
 <p>For each sequence calculate the frequency of pairwaise occurrence of amino acids. The length of the feature vector for each sequence would be 400 (20 x 20). Construct a classification model using DPC as a feature and compare the results with classification using amino acid composition.</p>
-<div class="cell" data-execution_count="46">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itertools</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>aa_list <span class="op">=</span> [<span class="st">'A'</span>,<span class="st">'C'</span>,<span class="st">'D'</span>,<span class="st">'E'</span>,<span class="st">'F'</span>,<span class="st">'G'</span>,<span class="st">'H'</span>,<span class="st">'I'</span>,<span class="st">'K'</span>,<span class="st">'L'</span>,<span class="st">'M'</span>,<span class="st">'N'</span>,<span class="st">'P'</span>,<span class="st">'Q'</span>,<span class="st">'R'</span>,<span class="st">'S'</span>,<span class="st">'T'</span>,<span class="st">'V'</span>,<span class="st">'W'</span>,<span class="st">'Y'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>“ACDFERDFERALK” 20x20</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="n">aa_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="s1">&#39;F&#39;</span><span class="p">,</span><span class="s1">&#39;G&#39;</span><span class="p">,</span><span class="s1">&#39;H&#39;</span><span class="p">,</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="s1">&#39;K&#39;</span><span class="p">,</span><span class="s1">&#39;L&#39;</span><span class="p">,</span><span class="s1">&#39;M&#39;</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="s1">&#39;Q&#39;</span><span class="p">,</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="s1">&#39;S&#39;</span><span class="p">,</span><span class="s1">&#39;T&#39;</span><span class="p">,</span><span class="s1">&#39;V&#39;</span><span class="p">,</span><span class="s1">&#39;W&#39;</span><span class="p">,</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span>
+</pre></div>
 </div>
-<div class="cell" data-execution_count="51">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Create a series of dipeptides</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>dpc_series <span class="op">=</span> pd.Series(name<span class="op">=</span><span class="st">'1'</span>,dtype<span class="op">=</span><span class="bu">float</span>)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> itertools.product(aa_list,aa_list):</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    dpc_series[<span class="st">''</span>.join([<span class="st">''</span>.join(x)])] <span class="op">=</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="54">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>df_dpc <span class="op">=</span> pd.DataFrame([])</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> keys,values <span class="kw">in</span> positive_dict.items():</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    dpc_series_copy <span class="op">=</span> dpc_series.copy()</span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#    print (values.seq)</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    dpc_seq <span class="op">=</span> [<span class="bu">str</span>(values.seq[i:i<span class="op">+</span><span class="dv">2</span>]) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(values.seq))]</span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">del</span> dpc_seq[<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> x <span class="kw">in</span> dpc_seq:</span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>        dpc_series_copy[x] <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    dpc_series_copy <span class="op">/=</span> <span class="bu">len</span>(values.seq)</span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    dpc_series_copy <span class="op">*=</span> <span class="dv">100</span></span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>    df_dpc <span class="op">=</span> df_dpc.append(dpc_series_copy)</span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="co">#dpc_series_copy</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="55">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df_dpc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="55">
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Create a series of dipeptides</span>
+<span class="n">dpc_series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">aa_list</span><span class="p">,</span><span class="n">aa_list</span><span class="p">):</span>
+    <span class="n">dpc_series</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)])]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">dpc_series</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AA    0
+AC    0
+AD    0
+AE    0
+AF    0
+     ..
+YS    0
+YT    0
+YV    0
+YW    0
+YY    0
+Name: 1, Length: 400, dtype: int64
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-input docutils container">
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_dpc</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([])</span>
+<span class="k">for</span> <span class="n">keys</span><span class="p">,</span><span class="n">values</span> <span class="ow">in</span> <span class="n">positive_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">dpc_series_copy</span> <span class="o">=</span> <span class="n">dpc_series</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c1">#    print (values.seq)</span>
+    <span class="n">dpc_seq</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">seq</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">seq</span><span class="p">))]</span>
+    <span class="k">del</span> <span class="n">dpc_seq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dpc_seq</span><span class="p">:</span>
+        <span class="n">dpc_series_copy</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">dpc_series_copy</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span>
+    <span class="n">dpc_series_copy</span> <span class="o">*=</span> <span class="mi">100</span>
+    <span class="n">df_dpc</span> <span class="o">=</span> <span class="n">df_dpc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dpc_series_copy</span><span class="p">)</span>
+<span class="c1">#dpc_series_copy</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_dpc</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-<table class="dataframe table table-sm table-striped">
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
   <thead>
-    <tr>
+    <tr style="text-align: right;">
       <th></th>
       <th>AA</th>
       <th>AC</th>
@@ -1106,262 +1441,139 @@ Counter({'-1': 121, '1': 113})</code></pre>
   </tbody>
 </table>
 <p>117 rows × 400 columns</p>
+</div></div></div>
 </div>
-</div>
-</div>
-
-
+</section>
 </section>
 </section>
 
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
     }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const disableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'prefetch';
-    }
-  }
-  const enableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'stylesheet';
-    }
-  }
-  const manageTransitions = (selector, allowTransitions) => {
-    const els = window.document.querySelectorAll(selector);
-    for (let i=0; i < els.length; i++) {
-      const el = els[i];
-      if (allowTransitions) {
-        el.classList.remove('notransition');
-      } else {
-        el.classList.add('notransition');
-      }
-    }
-  }
-  const toggleColorMode = (alternate) => {
-    // Switch the stylesheets
-    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-    manageTransitions('#quarto-margin-sidebar .nav-link', false);
-    if (alternate) {
-      enableStylesheet(alternateStylesheets);
-      for (const sheetNode of alternateStylesheets) {
-        if (sheetNode.id === "quarto-bootstrap") {
-          toggleBodyColorMode(sheetNode);
-        }
-      }
-    } else {
-      disableStylesheet(alternateStylesheets);
-      toggleBodyColorPrimary();
-    }
-    manageTransitions('#quarto-margin-sidebar .nav-link', true);
-    // Switch the toggles
-    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-    for (let i=0; i < toggles.length; i++) {
-      const toggle = toggles[i];
-      if (toggle) {
-        if (alternate) {
-          toggle.classList.add("alternate");     
-        } else {
-          toggle.classList.remove("alternate");
-        }
-      }
-    }
-  }
-  const isFileUrl = () => { 
-    return window.location.protocol === 'file:';
-  }
-  const hasAlternateSentinel = () => {  
-    let styleSentinel = getColorSchemeSentinel();
-    if (styleSentinel !== null) {
-      return styleSentinel === "alternate";
-    } else {
-      return false;
-    }
-  }
-  const setStyleSentinel = (alternate) => {
-    const value = alternate ? "alternate" : "default";
-    if (!isFileUrl()) {
-      window.localStorage.setItem("quarto-color-scheme", value);
-    } else {
-      localAlternateSentinel = value;
-    }
-  }
-  const getColorSchemeSentinel = () => {
-    if (!isFileUrl()) {
-      const storageValue = window.localStorage.getItem("quarto-color-scheme");
-      return storageValue != null ? storageValue : localAlternateSentinel;
-    } else {
-      return localAlternateSentinel;
-    }
-  }
-  let localAlternateSentinel = 'default';
-  // Dark / light mode switch
-  window.quartoToggleColorScheme = () => {
-    // Read the current dark / light value 
-    let toAlternate = !hasAlternateSentinel();
-    toggleColorMode(toAlternate);
-    setStyleSentinel(toAlternate);
-  };
-  // Ensure there is a toggle, if there isn't float one in the top right
-  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-    const a = window.document.createElement('a');
-    a.classList.add('top-right');
-    a.classList.add('quarto-color-scheme-toggle');
-    a.href = "";
-    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-    const i = window.document.createElement("i");
-    i.classList.add('bi');
-    a.appendChild(i);
-    window.document.body.appendChild(a);
-  }
-  // Switch to dark mode if need be
-  if (hasAlternateSentinel()) {
-    toggleColorMode(true);
-  } 
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
-    }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    setTimeout(function() {
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  function tippyHover(el, contentFn) {
-    const config = {
-      allowHTML: true,
-      content: contentFn,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start'
-    };
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
-    });
-  }
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
-    tippyHover(ref, function() {
-      var popup = window.document.createElement('div');
-      cites.forEach(function(cite) {
-        var citeDiv = window.document.createElement('div');
-        citeDiv.classList.add('hanging-indent');
-        citeDiv.classList.add('csl-entry');
-        var biblioDiv = window.document.getElementById('ref-' + cite);
-        if (biblioDiv) {
-          citeDiv.innerHTML = biblioDiv.innerHTML;
-        }
-        popup.appendChild(citeDiv);
-      });
-      return popup.innerHTML;
-    });
-  }
-});
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="./kmeans.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unsupervised learning</span></span>
-      </a>          
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="kmeans.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Unsupervised learning</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="PCA_tutorial.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Principal Component Analysis</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
   </div>
-  <div class="nav-page nav-page-next">
-      <a href="./PCA_tutorial.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Principal Component Analysis</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
-</div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
-    <div class="nav-footer-left">Copyright 2022, bioinfo.guru</div>   
-    <div class="nav-footer-right">
-      <ul class="footer-items list-unstyled">
-    <li class="nav-item compact">
-    <a class="nav-link" href="https://www.facebook.com/profile.php?id=100078250833738">
-      <i class="bi bi-facebook" role="img">
-</i> 
-    </a>
-  </li>  
-    <li class="nav-item compact">
-    <a class="nav-link" href="https://www.instagram.com/bioinfo.guru/">
-      <i class="bi bi-instagram" role="img">
-</i> 
-    </a>
-  </li>  
-    <li class="nav-item compact">
-    <a class="nav-link" href="https://www.linkedin.com/in/bioinfo-guru-68a8b7231/">
-      <i class="bi bi-linkedin" role="img">
-</i> 
-    </a>
-  </li>  
-    <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/bioinfo_guru">
-      <i class="bi bi-twitter" role="img">
-</i> 
-    </a>
-  </li>  
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#datasets">Datasets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-extraction">Feature extraction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-building">Model building</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-validation">Cross-validation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperparameters">Hyperparameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#grid-search">Grid Search</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#confusion-matrix">Confusion matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#roc-curve">ROC Curve</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise">Exercise</a></li>
 </ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Manish Datt
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
   </div>
-</footer>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
-
-
-</body></html>
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
