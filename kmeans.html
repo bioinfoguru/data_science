@@ -35,6 +35,7 @@
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7f5d0e3" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
@@ -282,6 +283,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-pre-processing">Data pre-processing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standardization-of-data-and-label-encoding">Standardization of data and label encoding</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-building">Model building</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-the-predicted-labels-with-the-original-labels">Compare the predicted labels with the original labels</a></li>
 </ul>
@@ -307,6 +309,8 @@ document.write(`
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span> 
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">LabelEncoder</span>
 <span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span> 
 </pre></div>
 </div>
@@ -398,8 +402,8 @@ document.write(`
 <p>Create <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> matrices having the observations and labels respectively. The <code class="docutils literal notranslate"><span class="pre">x</span></code> matrix would comprise of only the values of all the features for all the samples. This would be used for training the machine learning model. The <code class="docutils literal notranslate"><span class="pre">y</span></code> matrix would have the labels correponding to the samples in the <code class="docutils literal notranslate"><span class="pre">x</span></code> matrix. The <code class="docutils literal notranslate"><span class="pre">y</span></code> matrix is used in supervised classification. The <code class="docutils literal notranslate"><span class="pre">x</span></code> matrix is a 2d array with shape <em>n_samples by n_features</em> while the <code class="docutils literal notranslate"><span class="pre">y</span></code> matrix is a one dimensional array.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="n">iris</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s2">&quot;Class&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="n">iris</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span><span class="s2">&quot;Class&quot;</span><span class="p">]</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -413,11 +417,30 @@ document.write(`
 </div>
 </div>
 </div>
+</section>
+<section id="standardization-of-data-and-label-encoding">
+<h2>Standardization of data and label encoding<a class="headerlink" href="#standardization-of-data-and-label-encoding" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## To get classes as int</span>
-<span class="n">y_int</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">y_int</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_standardized</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">x_standardized</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-0.90068117,  1.03205722, -1.3412724 , -1.31297673],
+       [-1.14301691, -0.1249576 , -1.3412724 , -1.31297673],
+       [-1.38535265,  0.33784833, -1.39813811, -1.31297673],
+       [-1.50652052,  0.10644536, -1.2844067 , -1.31297673],
+       [-1.02184904,  1.26346019, -1.3412724 , -1.31297673]])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">y</span>
 </pre></div>
 </div>
 </div>
@@ -428,37 +451,15 @@ document.write(`
        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-       2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], dtype=int64)
+       2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2])
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_int</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(150,)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">iris</span><span class="p">[</span><span class="s2">&quot;Class&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">([</span><span class="s1">&#39;Iris-setosa&#39;</span><span class="p">,</span> <span class="s1">&#39;Iris-versicolor&#39;</span><span class="p">,</span><span class="s1">&#39;Iris-virginica&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">values</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-       1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-       2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-       2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-       3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-       3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], dtype=int64)
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Alternate approach</span>
+<span class="c1">#iris[&quot;Class&quot;].replace([&#39;Iris-setosa&#39;, &#39;Iris-versicolor&#39;,&#39;Iris-virginica&#39;], [1,2,3]).values</span>
 </pre></div>
 </div>
 </div>
@@ -471,7 +472,7 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">init</span> <span class="o">=</span> <span class="s1">&#39;k-means++&#39;</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span> <span class="n">n_init</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">y_kmeans</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">y_kmeans</span> <span class="o">=</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">x_standardized</span><span class="p">)</span>
 <span class="n">y_kmeans</span>
 </pre></div>
 </div>
@@ -479,11 +480,11 @@ document.write(`
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-       1, 1, 1, 1, 1, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+       1, 1, 1, 1, 1, 1, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2,
+       0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2,
-       2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 0, 2, 2, 2, 2,
-       2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0])
+       2, 2, 2, 0, 0, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2,
+       2, 0, 0, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0])
 </pre></div>
 </div>
 </div>
@@ -503,9 +504,9 @@ Once the data has been fitted to the KMeans object, different output parameters 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[5.9016129 , 2.7483871 , 4.39354839, 1.43387097],
-       [5.006     , 3.418     , 1.464     , 0.244     ],
-       [6.85      , 3.07368421, 5.74210526, 2.07105263]])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[-0.05021989, -0.88029181,  0.34753171,  0.28206327],
+       [-1.01457897,  0.84230679, -1.30487835, -1.25512862],
+       [ 1.13597027,  0.09659843,  0.996271  ,  1.01717187]])
 </pre></div>
 </div>
 </div>
@@ -518,7 +519,7 @@ Once the data has been fitted to the KMeans object, different output parameters 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([1])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([2])
 </pre></div>
 </div>
 </div>
@@ -534,45 +535,15 @@ Once the data has been fitted to the KMeans object, different output parameters 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39;
- &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39;
- &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39;
- &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39;
- &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39;
- &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39;
- &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39;
- &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39;
- &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39;
- &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39; &#39;Iris-setosa&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39;
- &#39;Iris-versicolor&#39; &#39;Iris-versicolor&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;
- &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39; &#39;Iris-virginica&#39;]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2
+ 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+ 2 2]
 [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
- 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
- 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 2 2 2 2 0 2 2 2 2
- 2 2 0 0 2 2 2 2 0 2 0 2 0 2 2 0 0 2 2 2 2 2 0 2 2 2 2 0 2 2 2 0 2 2 2 0 2
+ 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 0 0 0 2 0 0 0 0 0 0 0 0 2 0 0 0 0 2 0 0 0
+ 0 2 2 2 0 0 0 0 0 0 0 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 2 2 2 2 0 2 2 2 2
+ 2 2 0 0 2 2 2 2 0 2 0 2 0 2 2 0 2 2 2 2 2 2 0 0 2 2 2 0 2 2 2 0 2 2 2 0 2
  2 0]
 </pre></div>
 </div>
@@ -586,19 +557,12 @@ Once the data has been fitted to the KMeans object, different output parameters 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7302382722834697
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6201351808870379
 </pre></div>
 </div>
 </div>
 </div>
 <p>To perform the visual assessment of the predictions, let’s plot the clusters using first two features. This way it would be convenient to see the differences in the original and predicted labels in a two-dimensional graph. We’ll first create a copy of the iris dataframe and add a new column which would hold the predicted labels. Subsequently, the <code class="docutils literal notranslate"><span class="pre">scatterplot</span></code> function from the seaborn library for plotting and the coloring of the data points would be based on the class labels (original and predicted separately).</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
-</pre></div>
-</div>
-</div>
-</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">iris_predicted</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -704,7 +668,7 @@ Once the data has been fitted to the KMeans object, different output parameters 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/1668ded160e7689a30dee18064799d13af5edb8184a2f2bebc8730112aa21e87.png" src="_images/1668ded160e7689a30dee18064799d13af5edb8184a2f2bebc8730112aa21e87.png" />
+<img alt="_images/9a99cffbe7b40f28c9f1313ac82d4147cab5f0a4c2e2b0fe363909a94937c357.png" src="_images/9a99cffbe7b40f28c9f1313ac82d4147cab5f0a4c2e2b0fe363909a94937c357.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -713,15 +677,15 @@ Once the data has been fitted to the KMeans object, different output parameters 
 <span class="n">fix</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">centers</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">centers</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_standardized</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">x_standardized</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x1eed6ca8850&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.collections.PathCollection at 0x1e5287c2a30&gt;
 </pre></div>
 </div>
-<img alt="_images/c1e17ce145c00204c2ebb5fd6745422cc43f19b002cdb6b80b399e773f7ee54e.png" src="_images/c1e17ce145c00204c2ebb5fd6745422cc43f19b002cdb6b80b399e773f7ee54e.png" />
+<img alt="_images/f87744ad2006e24e2f4a43896f03508b4be82b1dd276e563284c84cc65385636.png" src="_images/f87744ad2006e24e2f4a43896f03508b4be82b1dd276e563284c84cc65385636.png" />
 </div>
 </div>
 <p>Similarly, we can plot pairwise plot for all the features in the dataframe using <code class="docutils literal notranslate"><span class="pre">sns.pairplot</span></code> function.</p>
@@ -742,7 +706,7 @@ Once the data has been fitted to the KMeans object, different output parameters 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/fb1e0ca608bc84b94400544aa926bc28a3f2192ad5cc7e8a2618ca7ed12ca7f3.png" src="_images/fb1e0ca608bc84b94400544aa926bc28a3f2192ad5cc7e8a2618ca7ed12ca7f3.png" />
+<img alt="_images/e1ff6957aabe02308f42b30eace65f907b3d79451f62a841e7ac4dd455a6f979.png" src="_images/e1ff6957aabe02308f42b30eace65f907b3d79451f62a841e7ac4dd455a6f979.png" />
 </div>
 </div>
 </section>
@@ -763,7 +727,7 @@ Once the data has been fitted to the KMeans object, different output parameters 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
     <span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">i</span><span class="p">,</span> <span class="n">init</span> <span class="o">=</span> <span class="s1">&#39;k-means++&#39;</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span> \
                     <span class="n">n_init</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">kmeans</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">kmeans</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_standardized</span><span class="p">)</span>
     <span class="n">wcss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kmeans</span><span class="o">.</span><span class="n">inertia_</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">wcss</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;The elbow method&#39;</span><span class="p">)</span>
@@ -774,7 +738,7 @@ Once the data has been fitted to the KMeans object, different output parameters 
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/86f54d6d06eaaca5dae399236e627df90c34a717f52245ddf4427187b978cbef.png" src="_images/86f54d6d06eaaca5dae399236e627df90c34a717f52245ddf4427187b978cbef.png" />
+<img alt="_images/6a5aaebbaa54204363b6f0dd726ed0e9b576c6ba7bbdf1589e97698cf4ce94d8.png" src="_images/6a5aaebbaa54204363b6f0dd726ed0e9b576c6ba7bbdf1589e97698cf4ce94d8.png" />
 </div>
 </div>
 </section>
@@ -845,6 +809,7 @@ Once the data has been fitted to the KMeans object, different output parameters 
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-pre-processing">Data pre-processing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standardization-of-data-and-label-encoding">Standardization of data and label encoding</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-building">Model building</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-the-predicted-labels-with-the-original-labels">Compare the predicted labels with the original labels</a></li>
 </ul>
