@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=f7f5d0e3" />
@@ -334,7 +334,7 @@ document.write(`
 </div>
 </div>
 </div>
-<p>First, we’ll use <code class="docutils literal notranslate"><span class="pre">SeqIO.parse</span></code> function to read the sequence files and make a dictionary of all the sequences using the <code class="docutils literal notranslate"><span class="pre">to_dict</span></code> function. This dictionary would have fasta header as the keys of the dictionary and the sequence object as the corresponding values.</p>
+<p>First, we’ll use <code class="docutils literal notranslate"><span class="pre">SeqIO.parse</span></code> function to read the sequence files and make a dictionary of all the sequences using the <code class="docutils literal notranslate"><span class="pre">to_dict</span></code> function. This dictionary would have fasta header as the keys of the dictionary and the sequence object as the corresponding values. Then, using the <code class="docutils literal notranslate"><span class="pre">get_amino_acids_percent</span></code> function from the Biopython library, the amino acid composition for all the sequences will be calculated. The code below shows the output for this function using a dummy sequence.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p1</span> <span class="o">=</span> <span class="n">ProteinAnalysis</span><span class="p">(</span><span class="s2">&quot;AAAASTRRRTRRAWEQWERQW&quot;</span><span class="p">)</span>
@@ -367,6 +367,7 @@ document.write(`
 </div>
 </div>
 </div>
+<p>The code below creates the two dataframes one each for the positive and negative datasets. We’ll add labels (as indicies) <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">-1</span></code> to indicate positive and negative classes, respectively.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">positive_dict</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;positive-aars.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">))</span>
@@ -691,6 +692,7 @@ Number of negative samples:  117
 <p>234 rows × 20 columns</p>
 </div></div></div>
 </div>
+<p>Next, we’ll check how these different amino acid compositions are correlated in our dataset. The pairwise correlations will be calculated using the <code class="docutils literal notranslate"><span class="pre">coor</span></code> function from the pandas library and the ploting is done using the <code class="docutils literal notranslate"><span class="pre">heatmap</span></code> function of the seaborn library.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#correlation between different features </span>
@@ -708,53 +710,13 @@ Number of negative samples:  117
 </section>
 <section id="model-building">
 <h2>Model building<a class="headerlink" href="#model-building" title="Link to this heading">#</a></h2>
-<p>Create data and label matrices.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df1_matrix</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)]</span><span class="o">.</span><span class="n">values</span> <span class="c1">## X matrix</span>
-<span class="n">labels</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span> <span class="c1">## Y matrix</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">labels</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([&#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
-       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
-       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
-       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
-       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
-       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
-       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
-       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
-       &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
-       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
-       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
-       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
-       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
-       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
-       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
-       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
-       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
-       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
-       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;,
-       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;], dtype=object)
-</pre></div>
-</div>
-</div>
-</div>
-<p>Create training and testing datasets, build the model and check prediction accuracy.</p>
+<p>Now, we’ll split our data into training and testing sub-sets. The training set will be used to build the SVM model and the testing set will be used to test the accuracy of the model. The <code class="docutils literal notranslate"><span class="pre">train_test_split</span></code> function in <code class="docutils literal notranslate"><span class="pre">model_selection</span></code> is used to create these sub-set given the data matrix (X) and labels (Y). For this function, the <code class="docutils literal notranslate"><span class="pre">test_size</span></code> keyword argument determines the size for the training and testing sub-set. E.g., when <code class="docutils literal notranslate"><span class="pre">test_size</span></code> is set to 0.2 then this imply that the model training will be done using 80% of the data and testing will be performed using the remaining 20% of the data. This approach ensures that when we are test our model, we are using data that has <em>not</em> been used for training the model. Subsequently, we’ll build the SVM model using the training dataset and check its prediction accuracy using the testing dataset.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Split-out validation dataset&quot;</span>
 <span class="n">validation_size</span> <span class="o">=</span> <span class="mf">0.20</span> <span class="c1"># 20% data for testing</span>
 <span class="n">seed</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># change to int for reproducibility</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">X_validation</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_validation</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="n">df1_matrix</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> \
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_validation</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_validation</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> \
                                                                                <span class="n">test_size</span><span class="o">=</span><span class="n">validation_size</span><span class="p">,</span> \
                                                                                 <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
 
@@ -767,19 +729,7 @@ Number of negative samples:  117
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.7659574468085106
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df1_matrix</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(234, 20)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.723404255319149
 </pre></div>
 </div>
 </div>
@@ -787,6 +737,13 @@ Number of negative samples:  117
 </section>
 <section id="cross-validation">
 <h2>Cross-validation<a class="headerlink" href="#cross-validation" title="Link to this heading">#</a></h2>
+<p>One of the limitation of the approach used above is that we are not using the entire data for model building since a sub-set of data is set aside for testing. To overcome this limitation, the cross-validation approach is used. Here, multiple splits of the data are created and each of these splits are iteratively used for model building and testing. This way we have practically used the entire data for model building. This method is called kfold cross validation, where k indicates the number of splits.</p>
+<div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<img alt="_images/4a8594e11c37d45b282ba69ee1bf298f48a5d2475fe87e98f413cbb2c6b90b50.png" src="_images/4a8594e11c37d45b282ba69ee1bf298f48a5d2475fe87e98f413cbb2c6b90b50.png" />
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">cross_val_score</span></code> function in <code class="docutils literal notranslate"><span class="pre">model.selection</span></code> class is used to perform the kfold cross validation by specifying the required value to the <code class="docutils literal notranslate"><span class="pre">cv</span></code> keyword argument.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
@@ -796,7 +753,7 @@ Number of negative samples:  117
 <span class="n">scoring</span> <span class="o">=</span> <span class="s1">&#39;accuracy&#39;</span>
 
 <span class="n">kfold</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">cv_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">SVC</span><span class="p">(),</span> <span class="n">df1_matrix</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
+<span class="n">cv_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">SVC</span><span class="p">(),</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">cv_results</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cv_results</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">cv_results</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
@@ -807,19 +764,6 @@ Number of negative samples:  117
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.54166667 0.625      0.5        0.83333333 0.60869565 0.69565217
  0.43478261 0.56521739 0.73913043 0.60869565]
 0.6152173913043478 0.11104998581213907
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cv_results</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.54166667, 0.625     , 0.5       , 0.83333333, 0.60869565,
-       0.69565217, 0.43478261, 0.56521739, 0.73913043, 0.60869565])
 </pre></div>
 </div>
 </div>
@@ -859,8 +803,8 @@ Number of negative samples:  117
 <span class="n">clf_rbf</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;rbf&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="n">kfold</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">cv_SVM_poly_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">clf_poly</span><span class="p">,</span> <span class="n">df1_matrix</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
-<span class="n">cv_SVM_rbf_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">clf_rbf</span><span class="p">,</span> <span class="n">df1_matrix</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
+<span class="n">cv_SVM_poly_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">clf_poly</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
+<span class="n">cv_SVM_rbf_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">clf_rbf</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cv_SVM_rbf_results</span><span class="p">)</span>
 <span class="nb">print</span> <span class="p">(</span><span class="n">cv_SVM_poly_results</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">cv_SVM_rbf_results</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
 </pre></div>
@@ -885,7 +829,7 @@ Number of negative samples:  117
                     <span class="p">{</span><span class="s1">&#39;kernel&#39;</span><span class="p">:[</span><span class="s1">&#39;poly&#39;</span><span class="p">],</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">],</span>
                      <span class="s1">&#39;degree&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)}]</span>
 <span class="n">clf_grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">SVC</span><span class="p">(),</span> <span class="n">tuned_parameters</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
-<span class="n">clf_grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df1_matrix</span><span class="p">,</span><span class="n">labels</span><span class="p">)</span>
+<span class="n">clf_grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -923,7 +867,7 @@ Number of negative samples:  117
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clf_poly</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;poly&#39;</span><span class="p">,</span><span class="n">C</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="n">kfold</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">cv_SVM_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">clf_poly</span><span class="p">,</span> <span class="n">df1_matrix</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
+<span class="n">cv_SVM_results</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">clf_poly</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">kfold</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cv_SVM_results</span><span class="p">)</span>
 <span class="nb">print</span> <span class="p">(</span><span class="n">cv_SVM_results</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span><span class="n">cv_SVM_results</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
 </pre></div>
@@ -952,11 +896,11 @@ Number of negative samples:  117
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clf_new</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;poly&#39;</span><span class="p">,</span><span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1">## Fit model to the data ##</span>
-<span class="n">clf_new</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df1_matrix</span><span class="p">,</span><span class="n">labels</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+<span class="n">clf_new</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
 
 <span class="c1">## Predict labels for the original data ##</span>
-<span class="n">clf_new_predict</span> <span class="o">=</span> <span class="n">clf_new</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">df1_matrix</span><span class="p">)</span>
+<span class="n">clf_new_predict</span> <span class="o">=</span> <span class="n">clf_new</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">df1</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">clf_new_predict</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -970,32 +914,51 @@ Counter({&#39;-1&#39;: 121, &#39;1&#39;: 113})
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_proba</span> <span class="o">=</span> <span class="n">clf_new</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">df1_matrix</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_proba</span> <span class="o">=</span> <span class="n">clf_new</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">df1</span><span class="p">)</span>
 <span class="n">y_proba</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.30633923, 0.69366077])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.34020921, 0.65979079])
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">clf_new_predict</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>       <span class="c1">## original labels</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">clf_new_predict</span><span class="p">)</span> <span class="c1">## predicted labels</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>numpy.ndarray
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;, &#39;1&#39;,
+       ...
+       &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;, &#39;-1&#39;],
+      dtype=&#39;object&#39;, length=234)
+[&#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;-1&#39; &#39;1&#39; &#39;-1&#39; &#39;-1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;-1&#39;
+ &#39;1&#39; &#39;-1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39;
+ &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;-1&#39; &#39;1&#39; &#39;-1&#39; &#39;1&#39; &#39;-1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39;
+ &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;-1&#39; &#39;1&#39; &#39;1&#39; &#39;-1&#39; &#39;1&#39; &#39;-1&#39;
+ &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39;
+ &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;-1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39;
+ &#39;1&#39; &#39;1&#39; &#39;-1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39;
+ &#39;-1&#39; &#39;-1&#39; &#39;1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39;
+ &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39;
+ &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;1&#39;
+ &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;1&#39; &#39;1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39;
+ &#39;-1&#39; &#39;-1&#39; &#39;1&#39; &#39;1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39;
+ &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39;
+ &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39;
+ &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39; &#39;-1&#39;]
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="n">clf_new_predict</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span><span class="n">clf_new_predict</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -1054,7 +1017,7 @@ Counter({&#39;-1&#39;: 121, &#39;1&#39;: 113})
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_curve</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">RocCurveDisplay</span>
 
-<span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">),</span> <span class="n">y_proba</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="c1">#clf_new_predict.astype(&#39;int&#39;))</span>
+<span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">),</span> <span class="n">y_proba</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="c1">#clf_new_predict.astype(&#39;int&#39;))</span>
 <span class="n">roc_display</span> <span class="o">=</span> <span class="n">RocCurveDisplay</span><span class="p">(</span><span class="n">fpr</span><span class="o">=</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="o">=</span><span class="n">tpr</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="n">roc_display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;dashed&quot;</span><span class="p">)</span>
